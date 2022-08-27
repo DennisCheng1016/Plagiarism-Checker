@@ -6,10 +6,8 @@ let fileName
 const postSinglePDF = async(req, res) => {
     console.log("postSinglePDF")
     try{
-        let file = req.files.undefined;
-        console.log(req.files)
+        let file = req.files.file;
         fileName = file.name;
-        console.log(fileName);
 
         file.mv("./raw/"+fileName, function (err) {
             if (err) {
