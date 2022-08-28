@@ -1,0 +1,61 @@
+
+
+THEUNIVERSITY OFMELBOURNE
+SWEN90014: MASTERSSOFTWAREENGINEERINGPROJECT
+Workshop: Risk Management
+Avoiding risk is one aspect of software engineering. In this workshop, we will identify the largest risks
+in your project, and plan some ways to control them.
+What is risk management?
+“Risk management is project management for adults” — Tom DeMarco and Timothy Lister.
+Risk management is the acceptance that the world is not a perfect place, that bad things happen and they
+must be dealt with. Risk management is rejecting the ‘head in the sand’ mentality that we find so tempting
+to indulge in.
+Why is rejecting this mentality so important?  Because proper project management simply cannot be done
+with such a childish mindset. It is usually these childish ways that results in projects being late, over budget,
+and failing to meet stakeholder expectations.
+Risk management is all about planning for the possibility that our undesirable outcomes may occur and
+analysing how to control these.
+Identifying risks
+There are many different ways to identify risk.  Two that are useful on a project of the scale you are under-
+taking are:
+1.Risk Brainstorming.
+This is where everyone in the team gets together and thinks about all the bad things that could possibly
+happen during the project.  One to way to do this is have everyone envisage a nightmare situation —
+what would be the worst thing that could happen to this project?
+2.Examining previous projects.
+Problems that occurred in other projects are likely to be risks for your project.  Even though your
+project will obviously be different to other projects, there will still be a lot of common threads. Your
+supervisor and peers who have work experience can help here.  Although they may not know your
+project as well as you, they would probably be happy to tell you at length about first hand experience
+with things going wrong on projects, and the lessons learned as a result.  You can also use your own
+previous experience, including what has already happened on your project.
+Controlling risks
+There are four ways we can control a risk:
+1
+
+1.Avoid it: simply do not do the thing that brings the risk with it.
+2.Transfer it: transfer the risk to a third party; e.g. contract out some risky functionality to an organisa-
+tion that specialises in this area.
+3.Mitigate it: reduce the probability of the risk occurring and/or the impact of the risk.  In this subject,
+your most valuable resource is time, so risk mitigation is often simply setting aside enough time to
+deal with a few risks should they materialise.
+4.Accept it: accept that it can occur but don’t plan for it.
+We can also use combinations of these.  When you identify a risk, you need to decide how to deal with it.
+Will you avoid it? Will you mitigate it? Will you try and mitigate the costs?
+Your tasks
+1.  Past-project examination
+Think about about problems that have affected you on team projects in the past (even non-SE projects).
+2.  Risk brainstorming [15 minutes]
+Each team (or both teams together) brainstorm some of the largest potential risks for their project, and
+write these on the whiteboard. What characteristics of your project make it particularly challenging?
+3.  Risk analysis [15 minutes]
+For each potential risk on the whiteboard, go through and do some analysis based on likelihood and
+impact. What does this analysis indicate? Which risks are the most significant for your project? What
+strategies will you use to control the risk?
+Until next time...
+•Use this list of risks as the basis for your risk log.
+•Revisit and revise the risk log at every team meeting: a few minutes should be enough in most cases,
+however the appearance of new risks or a significant change in likelihood may require consideration
+and action.
+•Start implementing the risk control strategies you have identified in this workshop.
+2
