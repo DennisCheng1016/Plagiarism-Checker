@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 let fileName
+let resultText
 const postSinglePDF = async(req, res) => {
     console.log("postSinglePDF")
     try{
@@ -14,6 +15,7 @@ const postSinglePDF = async(req, res) => {
                 res.status(500).send(err);
             } else {
                 pdfParse(file).then(result => {
+                    resultText = result.text
                     fs.writeFile(`./result/${fileName}.txt`, result.text, err => {
                         if (err) {
                             console.error(err);
@@ -62,7 +64,8 @@ const getMockResult = async(req, res) => {
                 file: fileName,
                 uploadTime: new Date(2022, 4, 12).toDateString(),
                 similarity: data,
-                PorF: "pass"
+                PorF: "pass",
+                text: resultText
             }
             res.status(200).send(JSON.stringify(result));
         });
