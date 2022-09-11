@@ -1,0 +1,15 @@
+We aim to 
+
+provide an easy-to-use tool for teachers to avoid wasting time and human resources on such tedious yet necessary tasks and therefore help to maintain a healthy and rigorous academic environment
+raise the consciousness of the importance of academic integrity among students
+
+
+Problems
+CS assignments can be in either code or text format, so we need at least two different sets of duplication detection algorithms.
+Some schools do not have a high-quality LMS(Learning Management System), and students must submit their work on paper. Therefore we need to integrate OCR(Optical Character Recognition) technology to support formats such as jpg.
+Scope
+In Scope
+
+This product should allow teachers to store historical works in different databases.
+This product should provide teachers with an easy-to-use file management system with a user-friendly UI that supports create, read, update and delete functions.
+Out of Scope 

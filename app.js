@@ -4,6 +4,7 @@ const verifyToken = require('./middlewares/verifyToken').verifyToken;
 const cors = require('cors');
 const fileUpload = require("express-fileupload");
 const fileRouter = require("./routes/fileRouter");
+const checkerRouter = require("./routes/checkerRouter");
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
 require('dotenv').config();
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use(verifyToken);
 app.use("/file", fileRouter);
+app.use("/check", checkerRouter);
 
 mongoose.connection.once('open', () => {
     console.log("Connected to MongoDB");

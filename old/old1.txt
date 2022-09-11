@@ -1,0 +1,22 @@
+Project Overview
+Students of Computer Science courses are often required to write essays or code as their assignments. These tasks are usually open-ended, so students should have different answers. However, sometimes some students would copy other students' responses. It will take a certain amount of time and resources to check if there's such academic misconduct. 
+
+This software project is to build a platform that helps teachers with this process by running duplication detection algorithms on each student's work and offering them the options to set the duplication rate threshold and detection granularity manually, select historical databases to check against, go over complex pieces closely regarding copied work on the side so that they can decide whether this particular duplication should be allowed or not. 
+
+We aim to 
+
+provide an easy-to-use tool for teachers to avoid wasting time and human resources on such tedious yet necessary tasks and therefore help to maintain a healthy and rigorous academic environment
+raise the consciousness of the importance of academic integrity among students
+
+
+Problems
+CS assignments can be in either code or text format, so we need at least two different sets of duplication detection algorithms.
+Some schools do not have a high-quality LMS(Learning Management System), and students must submit their work on paper. Therefore we need to integrate OCR(Optical Character Recognition) technology to support formats such as jpg.
+Scope
+In Scope
+
+This product should allow teachers to store historical works in different databases.
+This product should provide teachers with an easy-to-use file management system with a user-friendly UI that supports create, read, update and delete functions.
+Out of Scope 
+
+This product will not act as LMS or assignment submission system. It is only to be used to check if academic misconduct is present.
