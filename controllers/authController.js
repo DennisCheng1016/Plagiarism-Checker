@@ -9,17 +9,11 @@ async function register(req, res) {
 
     try {
 
-        // Check if the username or email already exists.
+        // Check if the email already exists.
         let existingEmail = await User.findOne({ email: req.body.email });
-        let existingUsername = await User.findOne({ email: req.body.username });
         if (existingEmail) {
             return res.status(409).json(
                 { msg: "Email has been registered" }
-            )
-        }
-        if (existingUsername) {
-            return res.status(409).json(
-                { msg: "Username has been registered" }
             )
         }
 
@@ -43,7 +37,7 @@ async function register(req, res) {
             { token: token }
         );
     } catch (error) {
-
+        console.log(error);
         // handle unexpected error from promises
         res.status(500).json({ msg: error.message })
     }

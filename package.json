@@ -4,7 +4,7 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "simple_start": "node app.js",
     "start": "nodemon app.js"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "jest": "^29.0.3",
+    "node-mocks-http": "^1.11.0",
     "nodemon": "^2.0.19"
   }
 }
