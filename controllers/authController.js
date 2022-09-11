@@ -11,7 +11,7 @@ async function register(req, res) {
 
         // Check if the username or email already exists.
         let existingEmail = await User.findOne({ email: req.body.email });
-        let existingUsername = await User.findOne({ email: req.body.email });
+        let existingUsername = await User.findOne({ email: req.body.username });
         if (existingEmail) {
             return res.status(409).json(
                 { msg: "Email has been registered" }

@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     subjects: [
-        {subject: subject}
+        {subject_id: String}
     ]
 })
 
