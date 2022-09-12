@@ -1,22 +1,23 @@
 const mongoose = require("mongoose")
-// const user = require('./user')
 
 /* -------------------------------------- MODEL -------------------------------------- */
-const subjectSchema = new mongoose.Schema({
+const datasetSchema = new mongoose.Schema({
 
     subjectCode: {
         type: String, 
         require: true, 
-        unique: true
     }, 
-    subjectName: {
+    assignmentName: {
         type: String, 
         require: true
     }, 
-    teacher: [String], 
-    assignment: [String]
+    datasetName: {
+        type:String, 
+        requrie: true, 
+        unique: true
+    }
 })
 
-const Subject = mongoose.model("Subject", subjectSchema)
+const Dataset = mongoose.model("Dataset", datasetSchema)
 
-module.exports = Subject
+module.exports = Dataset
