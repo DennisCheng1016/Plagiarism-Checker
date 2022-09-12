@@ -1,0 +1,36 @@
+// require mongoose module
+const mongoose = require("mongoose")
+
+/* -------------------------------------- MODEL -------------------------------------- */
+
+const bufferSchema = new mongoose.Schema({
+
+    user:{
+        type: String, 
+        require: true
+    }, 
+    subjectCode:{
+        type: String, 
+        require: true, 
+    }, 
+    assignment:{
+        type: String, 
+        require: true
+    }, 
+    dataType:{
+        type: String, 
+        require: true
+    }, 
+    fileName:{
+        type: String, 
+        require: true
+    }, 
+    binary:{
+        type: Buffer, 
+        require: true
+    }
+})
+
+const fileBuffer = mongoose.model("fileBuffer", bufferSchema)
+
+module.exports = fileBuffer
