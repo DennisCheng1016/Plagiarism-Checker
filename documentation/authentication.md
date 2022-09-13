@@ -36,6 +36,7 @@
 | username  | String     |
 | email     | String     |
 | password  | String     |
+| role  | enum: ["student", "teacher"]     |
 
 **Response**
 ```json
