@@ -1,28 +1,5 @@
 ## Account
 
-#### Login
-
-- [x] completed
-
-**url** 	```/auth/login/```
-
-**Parameter**
-
-| Parameter | explain  | Value type |
-| --------- | -------- | ---------- |
-| email     | email    | String     |
-| password  | password | String     |
-
-**Response**
-
-```json
-{
-    "token": "token"
-}
-```
-
-***
-
 #### Register
 
 - [x] completed
@@ -39,6 +16,32 @@
 | role  | enum: ["student", "teacher"]     |
 
 **Response**
+
+status code: 200
+```json
+{
+    "msg": "registration successful"
+}
+```
+
+***
+
+#### Login
+
+- [x] completed
+
+**url** 	```/auth/login/```
+
+**Parameter**
+
+| Parameter | explain  | Value type |
+| --------- | -------- | ---------- |
+| email     | email    | String     |
+| password  | password | String     |
+
+**Response**
+
+status code: 200
 ```json
 {
     "token": "token"
