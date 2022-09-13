@@ -1,4 +1,30 @@
-## Account
+## Authentication
+
+#### Register
+
+- [x] completed
+
+**url** 	```/auth/register/```
+
+**Parameter**
+
+| Parameter | Value type |
+| --------- | ---------- |
+| username  | String     |
+| email     | String     |
+| password  | String     |
+| role  | enum: ["student", "teacher"]     |
+
+**Response**
+
+status code: 200
+```json
+{
+    "msg": "registration successful"
+}
+```
+
+***
 
 #### Login
 
@@ -15,31 +41,35 @@
 
 **Response**
 
+status code: 200
 ```json
 {
-    "token": "token"
+    "token": "token",
+    "role": "role"
 }
 ```
 
 ***
 
-#### Register
+#### get user information from token
 
 - [x] completed
 
-**url** 	```/auth/register/```
+**url**        ```/auth/get_user/```
 
 **Parameter**
 
-| Parameter | Value type |
-| --------- | ---------- |
-| username  | String     |
-| email     | String     |
-| password  | String     |
+| Parameter | explain  | Value type |
+| --------- | -------- | ---------- |
 
 **Response**
+
+status code: 200
 ```json
 {
-    "token": "token"
+    "username": "username",
+    "email": "email",
+    "role": "role",
+    "subjects": "subjects"
 }
 ```

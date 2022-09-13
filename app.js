@@ -7,6 +7,7 @@ const fileRouter = require("./routes/fileRouter");
 const checkerRouter = require("./routes/checkerRouter");
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
+const adminRouter = require('./routes/adminRouter')
 require('dotenv').config();
 // console.log(process.env)
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/admin", adminRouter);
 app.use(verifyToken);
 app.use("/file", fileRouter);
 app.use("/check", checkerRouter);

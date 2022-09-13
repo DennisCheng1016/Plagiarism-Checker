@@ -16,5 +16,8 @@ userRouter.post('/register', userController.register);
 // Login a new user.
 userRouter.post('/login', userController.login);
 
+// get user information from token
+userRouter.get('/get_user', userController.getUserInfo);
+
 module.exports = userRouter
 
