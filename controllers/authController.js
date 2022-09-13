@@ -2,6 +2,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const nodemailer = require("nodemailer");
 
 // User registation. 
 async function register(req, res) {
@@ -26,7 +27,7 @@ async function register(req, res) {
                 username: req.body.username,
                 email: req.body.email,
                 password: Hashedpwd,
-                role: req.body.role
+                role: req.body.role,
             });
         await user.save();
 
