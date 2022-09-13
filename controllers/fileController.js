@@ -96,13 +96,8 @@ const uploadFiles = async(req, res) => {
         const subjectCode = req.body.subjectCode
         const assignment = req.body.assignment
         const dataType = req.body.dataType
-        const user = req.user.email
-        console.log(user)
-        console.log(Object.keys(files))
-        console.log(subjectCode)
+        const user = req.email.email
         Object.keys(files).map(key => {
-            console.log(key)
-            console.log(files[key])
             const file = files[key]
             const saveFile = new fileBuffer({
                 user: user, 
