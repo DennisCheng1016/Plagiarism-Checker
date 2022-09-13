@@ -1,4 +1,4 @@
-## Account
+## Authentication
 
 #### Register
 
@@ -44,6 +44,32 @@ status code: 200
 status code: 200
 ```json
 {
-    "token": "token"
+    "token": "token",
+    "role": "role"
+}
+```
+
+***
+
+#### get user information from token
+
+- [x] completed
+
+**url**        ```/auth/get_user/```
+
+**Parameter**
+
+| Parameter | explain  | Value type |
+| --------- | -------- | ---------- |
+
+**Response**
+
+status code: 200
+```json
+{
+    "username": "username",
+    "email": "email",
+    "role": "role",
+    "subjects": "subjects"
 }
 ```
