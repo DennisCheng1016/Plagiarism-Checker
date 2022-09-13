@@ -1,8 +1,0 @@
-CS assignments can be in either code or text format, so we need at least two different sets of duplication detection algorithms.
-Some schools do not have a high-quality LMS(Learning Management System), and students must submit their work on paper. Therefore we need to integrate OCR(Optical Character Recognition) technology to support formats such as jpg.
-Scope
-
-Priority: Searching in a public pool will take too long. The client also which teachers can create different databases for different assignments.
-
-2.3	Edit database	I can add new files and remove files from the database.	Medium	Should have	
-Size: It requires interfaces for collection schema to upload and delete records. 
