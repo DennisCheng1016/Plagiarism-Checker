@@ -26,6 +26,7 @@ async function register(req, res) {
                 username: req.body.username,
                 email: req.body.email,
                 password: Hashedpwd,
+                role: req.body.role
             });
         await user.save();
 
