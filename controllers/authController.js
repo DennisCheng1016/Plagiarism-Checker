@@ -48,28 +48,24 @@ async function login(req, res) {
 
     // If the user isn't found.
     if (!user) {
- HEAD
+ 
         return res.status(409).json(
             { msg: "User not found"}
         );
 
-        return res.status(409).json({ 
-            msg: "User not found" 
-        });
+        
 
     }
 
     // If the password is incorrect.
     const match = bcrypt.compareSync(req.body.password, user.password);
     if (!match) {
- HEAD
+ 
         return res.status(409).json(
             { msg: "Incorrect email/password." }
         );
 
-        return res.status(409).json({ 
-            msg: "Incorrect email/password." 
-        });
+         
 
     }
 
