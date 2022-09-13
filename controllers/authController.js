@@ -53,7 +53,7 @@ async function login(req, res) {
     // If the user isn't found.
     if (!user) {
         return res.status(400).json(
-            { msg: "Incorrect email/password." }
+            { msg: "User not found" }
         );
     }
 
@@ -73,6 +73,29 @@ async function login(req, res) {
         );
     }
 }
+
+// const emailTransport = nodemailer.createTransport({
+//     service: "",
+//     auth: {
+//         user: "",
+//         pass: "",
+//     }
+// });
+
+// const emailOptions = {
+//     from: "",
+//     to: "",
+//     subject: "",
+//     text: ""
+// }
+
+// emailTransport.sendMail(emailOptions, (err, success) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log("Email sent successfully");
+//     }
+// })
 
 // Generate token function.
 function generateToken(req) {
