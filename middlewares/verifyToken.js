@@ -12,7 +12,7 @@ function verifyToken(req, res, next) {
     }
 
     // Verify token.
-    jwt.verify(token, process.env.TOKEN_SIGNATURE, (err, user) => {
+    jwt.verify(token, process.env.TOKEN_SIGNATURE, (err, data) => {
 
         // Incorrect token.
         if (err) {
@@ -21,10 +21,9 @@ function verifyToken(req, res, next) {
             );
         }
 
-        req.user = user;
+        req.email = data.email;
         next();
-    })
-
+    });
 }
 
 module.exports = {
