@@ -12,7 +12,7 @@ function verifyToken(req, res, next) {
     }
 
     // Verify token.
-    jwt.verify(token, process.env.TOKEN_SIGNATURE, (err, email) => {
+    jwt.verify(token, process.env.TOKEN_SIGNATURE, (err, data) => {
 
         // Incorrect token.
         if (err) {
@@ -21,7 +21,7 @@ function verifyToken(req, res, next) {
             );
         }
 
-        req.email = email;
+        req.email = data.email;
         next();
     });
 }
