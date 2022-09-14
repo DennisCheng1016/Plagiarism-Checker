@@ -97,18 +97,29 @@ const uploadFiles = async(req, res) => {
         const assignment = req.body.assignment
         const dataType = req.body.dataType
         const user = req.email
-        Object.keys(files).map(key => {
-            const file = files[key]
+        if(Array.isArray(files)){
+            files.forEach(async(file) => {
+                const saveFile = new fileBuffer({
+                    user: user, 
+                    subjectCode: subjectCode, 
+                    assignment: assignment, 
+                    dataType: dataType,
+                    fileName: file.name, 
+                    binary: file.data
+                })
+                saveFile.save()
+            })
+        } else {
             const saveFile = new fileBuffer({
                 user: user, 
                 subjectCode: subjectCode, 
                 assignment: assignment, 
                 dataType: dataType,
-                fileName: file.name, 
-                binary: file.data
+                fileName: files.name, 
+                binary: files.data
             })
             saveFile.save()
-        })
+        }
 
         return res.status(200).json({ msg: "Files uploaded"})
 
