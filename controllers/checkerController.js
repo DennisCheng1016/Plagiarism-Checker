@@ -11,7 +11,7 @@ const postCheckConfig = async(req, res) => {
         let filesInPassed;
         const filesInBuffer = await Buffer.find({subjectCode: req.body.subjectCode, assignment: req.body.assignment, dataType: req.body.dataType});
         res.status(200).send("success");
-        initiateCheck(filesInBuffer, filesInPassed, req.body.subjectCode, req.body.assignment, req.body.dataType, req.email.email);
+        initiateCheck(filesInBuffer, filesInPassed, req.body.subjectCode, req.body.assignment, req.body.dataType, req.email);
     } catch(err) {
         console.log(err);
         res.status(500).send(err);
