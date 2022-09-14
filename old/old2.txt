@@ -1,0 +1,120 @@
+Epic	User Story ID	As	I want to	So that	
+Size estimation
+
+large = 5+ days
+
+medium = 3-5 days
+
+small = 1-2 days
+
+MoSCoW priority	Justification
+User accounts	1.1	
+Teachers
+
+Students
+
+
+
+Register my account
+
+I can create my account.
+
+Large 
+
+Must have
+
+Size: This will require a significant amount of backend work, including architectural design, hashing and request writing to the database.
+
+Priority: The client wishes only registered users were allowed to use this tool. Having student and teacher accounts is also one of the unique features.
+
+1.2	Login with my account	I can use the system.	Medium	
+Must have
+
+Size: Since the registration process will create architecture for accounts, logging in consists of reading from the database, comparing hash values and creating a token with an expiration date. 
+
+Priority: The client wishes only registered users were allowed to use this tool.  
+
+1.3	Reset password when I forget it	I can reset a new password if I forget my current password.	Small	
+Could have
+
+Size: Since the registration process will create architecture for accounts, resetting consists of updating a file in the database. Therefore it will not take a significant amount of time. 
+
+Priority: It is likely users may forget their password. Therefore such an interface may help. 
+
+Database	2.1	Teachers	
+Save the historical submissions in a database
+
+I can use this way to create references for comparison.	Medium	Must have	
+Size: It requires some effort for a schema for 'Collection' and an interface to add to the collection
+
+Priority: One unique feature of the project proposal is that teachers can save the historical data in an online database. 
+
+2.2	
+Create different databases for different assignments
+
+I can compare submissions within the scope of specific assignments.	Medium	Must have	
+Size: It is a basic 'get by owner' function in the backend and sent to the front end for selection. However, the collection owner should be considered when designing the collection schema. 
+
+Priority: Searching in a public pool will take too long. The client also which teachers can create different databases for different assignments.
+
+2.3	Edit database	I can add new files and remove files from the database.	Medium	Should have	
+Size: It requires interfaces for collection schema to upload and delete records. 
+
+Priority: Teachers may wish to customise the compared range. 
+
+Checker	4.1	
+Teachers
+
+Students
+
+Choose the assignment to compare	I can have flexibility in choosing the scope of comparison of files.	Medium	Should have	
+Size: The visibility of collections should be carefully managed. 
+
+Priority: Multiple collections may be available for students and teachers to test similarity. Therefore an option for choice is required. 
+
+4.2	Check the similarity between the uploaded file and chosen database	I can see the similarity between the submission and others	Large	Must have	
+Size: It requires research on algorithms or interfaces to calculate the similarity between files. 
+
+Priority: According to the proposal, it is the system's core. The system does not make sense without this.
+
+4.3	Teachers	Upload multiple files to the system each time	I can upload submissions of all students once	Small	Should have	
+Size: It consists of accepting multiple selected files, which is feasible in HTML and requires the backend to store them in the database using previous interfaces. 
+
+Priority: It is not directly required by the client. However, it is convenient for teachers to upload multiple files simultaneously. 
+
+4.4	Choose the database within the scope of the chosen 'Assignment page to compare.	I can have flexibility in choosing the version of comparison of files.	Large	Should have	
+Size: It requires effort in managing each assignment's scope and unique design in the collection schema. 
+
+Priority: It is nice to have so that the teachers can check similarities from all collections within the scope. 
+
+4.5	Set plagiarism threshold and parameters	I can have flexibility in filtering plagiarised submissions.	Small	Could have	
+Size: Based on the previous similarity check interface, a function of marking a similarity more significant than the threshold is added. 
+
+Priority: It is nice to have, as the client thinks it is nice to have better visualisations. 
+
+4.6	Students	Upload one file to the system each time	I can upload the file on which I want to check	Small	Must have	
+Size: Uploading the file to the system and storing it at the front end before running the check. 
+
+Priority: It is a pre-step for the system to do checks, which is part of core needs. 
+
+Administration	5.1	Admin	manage subjects and assignments	I can let the student find their assignments more easily based on subject	Small	Must have	
+Size: Similar to create assignments and save them to the database
+
+Priority: Provides basic as well as core functionalities to the system
+
+5.2	Teacher	manage assignments	I can let the student find their assignments	Small	Must have	
+Size: Similar to create assignments and save them to the database
+
+Priority: Provides basic as well as core functionalities to the system
+
+5.3	Admin	Permit teachers and students to register by email	I can let teachers access information and data on subjects and assignments related to them	Small	Must have	
+Assumption: Admin has a set of teachers' email 
+
+Size: Since the registration process will create architecture for accounts, this refers to storing data as a buffer in the database before registration.
+
+Priority: Provides security to the web application and ensures outside visitors cannot use our functionalities without permission. 
+
+5.4	Admin	manage existing accounts	I can ensure the system is robust and spiteful users will be banned	Small	Must have	
+Size: Deleting by user id is a basic function in database engines
+
+Priority: Provides security to the web application and ensures spiteful users or retired teachers/students cannot use our functionality. 
