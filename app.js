@@ -17,7 +17,6 @@ connectDB();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(fileUpload());
 
 const port = process.env.PORT || 8888;
 
@@ -27,7 +26,10 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
+
 app.use(verifyToken);
+
+app.use(fileUpload());
 app.use("/file", fileRouter);
 app.use("/check", checkerRouter);
 
