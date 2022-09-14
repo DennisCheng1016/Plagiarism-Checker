@@ -1,6 +1,6 @@
 // require mongoose module
 const mongoose = require("mongoose")
-// const subject = require('./subject')
+const subject = require('./subject')
 
 /* -------------------------------------- MODEL -------------------------------------- */
 const userSchema = new mongoose.Schema({
