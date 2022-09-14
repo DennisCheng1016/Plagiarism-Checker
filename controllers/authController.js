@@ -96,19 +96,17 @@ async function getUserInfo(req, res) {
     } else {
 
         // Verify token.
-        jwt.verify(token, process.env.TOKEN_SIGNATURE, async (err, email) => {
+        jwt.verify(token, process.env.TOKEN_SIGNATURE, async (err, data) => {
 
             // Incorrect token.
             if (err) {
-                return res.status(400).json(
+                return res.status(409).json(
                     { msg: "Invalid token." }
                 );
             }
-            console.log(email);
             // get the user by email
-            let user = await User.findOne({ email: email.email });
+            let user = await User.findOne({ email: data.email });
             
-
             // sent message to front-end
             res.status(200).json({
                 username: user.username,

@@ -22,7 +22,7 @@ describe('checkAuth', () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
-            body: { username: "validName", email: "validemail@test.com", password: "Pwd123456" }
+            body: { username: "validName", email: "validemail@test.com", password: "Pwd123456", role: "student" }
         });
         var res = httpMocks.createResponse();
         await auth.register(req, res);
@@ -32,22 +32,16 @@ describe('checkAuth', () => {
 
         // get data that sent to res
         data = JSON.parse(res._getData());
-        var emailGet;
 
-        // decode the token to get email
-        jwt.verify(data.token, process.env.TOKEN_SIGNATURE, (err, user) => {
-            emailGet = user.email;
-        });
-
-        // assert if the decoded info is correct
-        expect(emailGet).toBe("validemail@test.com");
+        //assert the error message is correct
+        expect(data.msg).toBe("registration successful");
     });
 
     test('status 409 when account has been registered', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
-            body: { username: "validName", email: "validemail@test.com", password: "Pwd123456" }
+            body: { username: "validName", email: "validemail@test.com", password: "Pwd123456", role: "student" }
         });
         var res = httpMocks.createResponse();
 
@@ -89,7 +83,7 @@ describe('checkAuth', () => {
         expect(emailGet).toBe("validemail@test.com");
     });
 
-    test('status 400 when login with incorrect info', async () => {
+    test('status 409 when login with incorrect info', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
@@ -100,13 +94,41 @@ describe('checkAuth', () => {
         await auth.login(req, res);
 
         // assert the status code is 200
-        expect(res.statusCode).toBe(400);
+        expect(res.statusCode).toBe(409);
 
         // get data that sent to res
         data = JSON.parse(res._getData());
 
         //assert the error message is correct
         expect(data.msg).toBe("Incorrect email/password.");
+    });
+
+    test('getuserinfo return status 200 when token is valid', async () => {
+
+        // set up mock req and res
+        var req = httpMocks.createRequest({
+            body: { email: "validemail@test.com", password: "Pwd123456" }
+        });
+        var res = httpMocks.createResponse();
+
+        await auth.login(req, res);
+
+        // assert the status code is 200
+        expect(res.statusCode).toBe(200);
+
+        // get data that sent to res
+        data = JSON.parse(res._getData());
+
+        var req2 = httpMocks.createRequest({
+            headers: { token: data.token }
+        });
+
+        var res2 = httpMocks.createResponse();
+
+        await auth.getUserInfo(req2, res2);
+
+        // assert if the res is success
+        expect(res2.statusCode).toBe(200);
     });
 });
 
