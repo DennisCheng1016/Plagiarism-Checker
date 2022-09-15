@@ -5,6 +5,7 @@ const cors = require('cors');
 const fileUpload = require("express-fileupload");
 const fileRouter = require("./routes/fileRouter");
 const checkerRouter = require("./routes/checkerRouter");
+const resultRouter = require("./routes/resultRouter");
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
 const adminRouter = require('./routes/adminRouter')
@@ -30,6 +31,7 @@ app.use("/admin", adminRouter);
 app.use(verifyToken);
 app.use("/file", fileRouter);
 app.use("/check", checkerRouter);
+app.use("/result", resultRouter);
 
 mongoose.connection.once('open', () => {
     console.log("Connected to MongoDB");
