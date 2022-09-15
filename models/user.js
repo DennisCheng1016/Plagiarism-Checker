@@ -23,9 +23,7 @@ const userSchema = new mongoose.Schema({
         enum: ['student', 'teacher'],
         required: true,
     },
-    subjects: [
-        { subject_id: String }
-    ]
+    subjects: [String]
 })
 
 

@@ -10,7 +10,7 @@ const postCheckConfig = async(req, res) => {
     try{
         let filesInPassed;
         const filesInBuffer = await Buffer.find({subjectCode: req.body.subjectCode, assignment: req.body.assignment, dataType: req.body.dataType});
-        res.status(200).send("success");
+        res.status(200).send({msg:"success"});
         initiateCheck(filesInBuffer, filesInPassed, req.body.subjectCode, req.body.assignment, req.body.dataType, req.email);
     } catch(err) {
         console.log(err);
@@ -32,18 +32,17 @@ function initiateCheck(batchFiles, old, subjectCode, assignment, dataType, userE
             fs.writeFileSync(`./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}/${fileName}.txt`, result.text);
             if (i == batchFiles.length-1) {
                 let batch = `./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}`;
-                exec(`./sim_3_0_2/sim_text -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), subjectCode, assignment, dataType));
+                exec(`./sim_3_0_2/sim_text -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), subjectCode, assignment, dataType, batchFiles));
             }
         })
     }
 }
 
-async function storeResult(resultStr, batchName, when, subjectCode, assignment, dataType) {
+async function storeResult(resultStr, batchName, when, subjectCode, assignment, dataType, files) {
     let data = resultStr.split('\n\n');
     let result = resultParser(data);
     let emailIndex = batchName.lastIndexOf('_')+1;
     let checker = batchName.slice(emailIndex, batchName.length);
-    const files = await Buffer.find({subjectCode: subjectCode, assignment: assignment, dataType: dataType});
     for (let i = 0; i < result.length; i++) {
         let newResult = new Result();
         let realFileName = path.parse(result[i].fileName).name;
@@ -60,6 +59,9 @@ async function storeResult(resultStr, batchName, when, subjectCode, assignment, 
             }
         });
         await newResult.save();
+    }
+    for (let i = 0; i < files.length; i++) {
+        await Buffer.deleteOne({_id : files[i].id});
     }
     fs.rmSync(batchName, { recursive: true, force: true });
 }
