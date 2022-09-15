@@ -1,22 +1,3 @@
-Project Overview
-Students of Computer Science courses are often required to write essays or code as their assignments. These tasks are usually open-ended, so students should have different answers. However, sometimes some students would copy other students' responses. It will take a certain amount of time and resources to check if there's such academic misconduct. 
+Colonialism had a destabilizing effect on what had been a number of ethnic groups that is still being felt in African politics. Before European influence, national borders were not much of a concern, with Africans generally following the practice of other areas of the world, such as the Arabian peninsula, where a group's territory was congruent with its military or trade influence.
 
-This software project is to build a platform that helps teachers with this process by running duplication detection algorithms on each student's work and offering them the options to set the duplication rate threshold and detection granularity manually, select historical databases to check against, go over complex pieces closely regarding copied work on the side so that they can decide whether this particular duplication should be allowed or not. 
-
-We aim to 
-
-provide an easy-to-use tool for teachers to avoid wasting time and human resources on such tedious yet necessary tasks and therefore help to maintain a healthy and rigorous academic environment
-raise the consciousness of the importance of academic integrity among students
-
-
-Problems
-CS assignments can be in either code or text format, so we need at least two different sets of duplication detection algorithms.
-Some schools do not have a high-quality LMS(Learning Management System), and students must submit their work on paper. Therefore we need to integrate OCR(Optical Character Recognition) technology to support formats such as jpg.
-Scope
-In Scope
-
-This product should allow teachers to store historical works in different databases.
-This product should provide teachers with an easy-to-use file management system with a user-friendly UI that supports create, read, update and delete functions.
-Out of Scope 
-
-This product will not act as LMS or assignment submission system. It is only to be used to check if academic misconduct is present.
+In the 1870s European nations were bickering over themselves about the spoils ofAfrica. In order to prevent further conflict between them, they convened at the Berlin Conference of 1884-1885 to lay down the rules on how they would partition up Africa between themselves. Between 1870 and World War I alone, the European scramble for Africa resulted in the adding of around one-fifth of the land area of the globe to its overseas colonial possessions.
