@@ -1,6 +1,6 @@
 // require mongoose module
 const mongoose = require("mongoose")
-const subject = require('./subject')
+const Subject = require('./subject')
 
 /* -------------------------------------- MODEL -------------------------------------- */
 const userSchema = new mongoose.Schema({
@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema({
         enum: ['student', 'teacher'],
         required: true,
     },
-    subjects: [String]
+    subjects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject'
+    }]
 })
 
 
