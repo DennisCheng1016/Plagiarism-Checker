@@ -9,10 +9,12 @@ const assignmentSchema = new mongoose.Schema({
     }, 
     assignmentName: {
         type: String, 
-        require: true, 
-        unique: true
+        require: true 
     }, 
-    dataset: [String]
+    dataset: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Dataset'
+    }]
 })
 
 const Assignment = mongoose.model("Assignment", assignmentSchema)

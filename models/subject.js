@@ -13,8 +13,14 @@ const subjectSchema = new mongoose.Schema({
         type: String, 
         require: true
     }, 
-    teacher: [String], 
-    assignment: [String]
+    teachers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }], 
+    assignments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Assignment'
+    }]
 })
 
 const Subject = mongoose.model("Subject", subjectSchema)
