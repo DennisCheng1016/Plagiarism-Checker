@@ -14,11 +14,10 @@ const createSubject = async(req, res) => {
         // }
 
         const subjectCode = req.body.subjectCode
-        if(Subject.findOne({subjectCode: subjectCode})) return res.status(409).json({mag: "SubjectCode has been used"});
+        if(!subjectCode) return res.status(409).json({msg: "No subjectCode!"});
+        if(await Subject.findOne({subjectCode: subjectCode})) return res.status(409).json({mag: "SubjectCode has been used"});
         const subjectName = req.body.subjectName
-        // console.log(subjectCode)
-        // console.log(subjectName)
-        const newSubject = new subject({
+        const newSubject = new Subject({
             subjectCode: subjectCode, 
             subjectName: subjectName
         })
@@ -34,12 +33,11 @@ const createSubject = async(req, res) => {
 const addSubject = async(req, res) => {
     try{
         const userEmail = req.email
-        console.log(userEmail)
         const subjectCode = req.body.subjectCode
         const subject = await Subject.findOne({subjectCode: subjectCode})
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-        if(await User.findOne({email: userEmail, subjects: subjectCode})) return res.status(409).json({ msg: "Subject already existed"}); 
-        const result = await User.updateOne({email: userEmail}, {$push: {subjects: subjectCode}})
+        if(await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject already existed"}); 
+        const result = await User.updateOne({email: userEmail}, {$push: {subjects: subject._id}})
         return res.status(200).json({msg: "Add subject successfully"})
     } catch(error){
         res.status(500).json({msg: error.message})
@@ -51,8 +49,8 @@ const deleteSubject = async(req, res) => {
         const subjectCode = req.body.subjectCode
         const subject = await Subject.findOne({subjectCode: subjectCode})
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-        if(!await User.findOne({email: userEmail, subjects: subjectCode})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
-        const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subjectCode}})
+        if(!await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
+        const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subject._id}})
         return res.status(200).json({msg: "Delete subject successfully"})
     } catch(error){
         res.status(500).json({msg: error.message})
@@ -61,14 +59,12 @@ const deleteSubject = async(req, res) => {
 
 const getSubjectList = async(req, res) => {
     try{
-        // const userEmail = req.email
-        // const subjectCode = req.body.subjectCode
-        const subjects = await Subject.find({})
-        console.log(subjects)
-        // if(!subject) return res.status(409).json({ msg: "Subject not found"});
-        // if(!await User.findOne({email: userEmail, subjects: subjectCode})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
-        // const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subjectCode}})
-        return res.status(200).json(subjects)
+        const userEmail = req.email
+        // const subjects = await User.find({email: userEmail}).populate("subjects")
+        const user = await User.findOne({email: userEmail}).populate("subjects")
+        // console.log(user)
+        // console.log(user.subjects)
+        return res.status(200).json(user.subjects)
     } catch(error){
         res.status(500).json({msg: error.message})
     }
