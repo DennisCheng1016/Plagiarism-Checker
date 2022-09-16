@@ -3,9 +3,9 @@ const mongoose = require("mongoose")
 /* -------------------------------------- MODEL -------------------------------------- */
 const assignmentSchema = new mongoose.Schema({
 
-    subjectCode: {
-        type: String, 
-        require: true, 
+    subject: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject'
     }, 
     assignmentName: {
         type: String, 

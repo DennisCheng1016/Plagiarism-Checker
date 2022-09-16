@@ -7,13 +7,15 @@ const User = require('../models/user')
 const createAssignment = async(req, res) => {
     try{
         const userEmail = req.email
-        if(!await User.findOne({email: userEmail, role: "teacher"})) return res.status(409).json({mag: "Must be teacher to perform"});
-        const assignmentName = req.body.assignmentName
+        if(!await User.findOne({email: userEmail, role: "teacher"})) return res.status(409).json({msg: "Must be teacher to perform"});
         const subjectCode = req.body.subjectCode
-        if(!await Subject.findOne({subjectCode: subjectCode})) return res.status(409).json({mag: "Subject not found"});
+        const subject = await Subject.findOne({subjectCode: subjectCode})
+        const assignmentName = req.body.assignmentName
+        if(!subject) return res.status(409).json({mag: "Subject not found"});
+        if(await Assignment.findOne({subject: subject._id, assignmentName: assignmentName})) return restatus(409).json({msg: "Assignment Name already existed"})
         const newAssignment = new Assignment({
-            assignmentName: assignmentName, 
-            subjectCode: subjectCode
+            subject: subject._id,
+            assignmentName: assignmentName
         })
         const update = await Subject.updateOne({subjectCode: subjectCode}, {$push: {assignments: newAssignment._id}})
         newAssignment.save()
@@ -47,9 +49,8 @@ const deleteAssignment = async(req, res) => {
 const getAssignmentList = async(req, res) => {
     try{
         const subjectCode = req.query.subjectCode
-        console.log(subjectCode)
         const subject = await Subject.findOne({subjectCode: subjectCode}).populate("assignments")
-        // console.log(subject)
+
         return res.status(200).json(subject.assignments)
     } catch(error){
         res.status(500).json({msg: error.message})
@@ -60,5 +61,4 @@ module.exports = {
     createAssignment,
     deleteAssignment,
     getAssignmentList 
-    // getSubjectList
 }
