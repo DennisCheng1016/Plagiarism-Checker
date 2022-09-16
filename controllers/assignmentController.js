@@ -15,7 +15,7 @@ const createAssignment = async(req, res) => {
             assignmentName: assignmentName, 
             subjectCode: subjectCode
         })
-        const update = await Subject.updateOne({subjectCode: subjectCode}, {$push: {assignments: newAssignment._id.toString()}})
+        const update = await Subject.updateOne({subjectCode: subjectCode}, {$push: {assignments: newAssignment._id}})
         newAssignment.save()
         return res.status(200).json({msg: "Create assignment successfully"})
 
@@ -24,40 +24,33 @@ const createAssignment = async(req, res) => {
     }
 }
 
-// const addSubject = async(req, res) => {
-//     try{
-//         const userEmail = req.email
-//         const subjectCode = req.body.subjectCode
-//         const subject = await Subject.findOne({subjectCode: subjectCode})
-//         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-//         if(await User.findOne({email: userEmail, subjects: subjectCode})) return res.status(409).json({ msg: "Subject already existed"}); 
-//         const result = await User.updateOne({email: userEmail}, {$push: {subjects: subjectCode}})
-//         return res.status(200).json({msg: "Add subject successfully"})
-//     } catch(error){
-//         res.status(500).json({msg: error.message})
-//     }
-// }
-// const deleteSubject = async(req, res) => {
-//     try{
-//         const userEmail = req.email
-//         const subjectCode = req.body.subjectCode
-//         const subject = await Subject.findOne({subjectCode: subjectCode})
-//         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-//         if(!await User.findOne({email: userEmail, subjects: subjectCode})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
-//         const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subjectCode}})
-//         return res.status(200).json({msg: "Delete subject successfully"})
-//     } catch(error){
-//         res.status(500).json({msg: error.message})
-//     }
-// }
+const deleteAssignment = async(req, res) => {
+    try{
+        const userEmail = req.email
+        const assignmentID = req.body.assignmentID
+        const subjectCode = req.body.subjectCode
+        if(!await User.findOne({email: userEmail, role: "teacher"})) return res.status(409).json({mag: "Must be teacher to perform"});
+        if(!await Subject.findOne({subjectCode: subjectCode, assignments: assignmentID})) return res.status(409).json({mag: "Subject not found or subject does not have this assignment"});
+        const assignment = await Assignment.findById(assignmentID) 
+        if(!assignment) return res.status(409).json({mag: "Assignment does not exist"}); 
+        else{
+            const result = await Subject.updateOne({subjectCode: subjectCode}, {$pull: {assignments: assignment._id}})
+            const result2 = await Assignment.deleteOne({_id: assignmentID})
+        }
+        return res.status(200).json({msg: "Delete assignment successfully"})
+
+    } catch(error){
+        res.status(500).json({msg: error.message})
+    }
+}
 
 const getAssignmentList = async(req, res) => {
     try{
-        const subjectCode = req.body.subjectCode
-        const subject = await Subject.findOne({subjectCode: subjectCode})
-        const assignmentList = subject.assignments
-        console.log(assignmentList)
-        return res.status(200).json(subjects)
+        const subjectCode = req.query.subjectCode
+        console.log(subjectCode)
+        const subject = await Subject.findOne({subjectCode: subjectCode}).populate("assignments")
+        // console.log(subject)
+        return res.status(200).json(subject.assignments)
     } catch(error){
         res.status(500).json({msg: error.message})
     }
@@ -65,7 +58,7 @@ const getAssignmentList = async(req, res) => {
 
 module.exports = {
     createAssignment,
+    deleteAssignment,
     getAssignmentList 
-    // deleteSubject, 
     // getSubjectList
 }
