@@ -8,6 +8,7 @@ const checkerRouter = require("./routes/checkerRouter");
 const resultRouter = require("./routes/resultRouter");
 const subjectRouter = require("./routes/subjectRouter");
 const assignmentRouter = require("./routes/assignmentRouter");
+const bufferFileRouter = require("./routes/bufferFileRouter")
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
 const adminRouter = require('./routes/adminRouter')
@@ -36,6 +37,7 @@ app.use("/check", checkerRouter);
 app.use("/result", resultRouter);
 app.use("/subject",  subjectRouter);
 app.use("/assignment",  assignmentRouter);
+app.use("/buffer",  bufferFileRouter);
 
 mongoose.connection.once('open', () => {
     console.log("Connected to MongoDB");
