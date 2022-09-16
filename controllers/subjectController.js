@@ -14,14 +14,18 @@ const createSubject = async(req, res) => {
         // }
 
         const subjectCode = req.body.subjectCode
+        const teacherEmail = req.body.teacherEmail
+        const teacher = await User.findOne({email: teacherEmail, role: "teacher"});
+        if(!teacher) res.status(409).json({msg: "Teacher not found"});
         if(!subjectCode) return res.status(409).json({msg: "No subjectCode!"});
         if(await Subject.findOne({subjectCode: subjectCode})) return res.status(409).json({mag: "SubjectCode has been used"});
         const subjectName = req.body.subjectName
         const newSubject = new Subject({
             subjectCode: subjectCode, 
-            subjectName: subjectName
+            subjectName: subjectName,
+            teachers: teacher._id 
         })
-
+        const result = await User.updateOne({userEmail: teacherEmail}, {$push: {subjects: newSubject._id}})
         newSubject.save()
         return res.status(200).json({msg: "Create subject successfully"})
 
@@ -51,6 +55,7 @@ const deleteSubject = async(req, res) => {
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
         if(!await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
         const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subject._id}})
+        // const result2 = await Subject.deleteOne({subjectCode: subjectCode})
         return res.status(200).json({msg: "Delete subject successfully"})
     } catch(error){
         res.status(500).json({msg: error.message})
