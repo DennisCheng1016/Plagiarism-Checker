@@ -1,7 +1,7 @@
 const pdfParse = require('pdf-parse')
 const fs = require('fs')
 const fsp = require('fs').promises
-const fileBuffer = require('../models/buffer')
+const fileBuffer = require('../models/bufferFile')
 const path = require('path')
 
 let fileName
