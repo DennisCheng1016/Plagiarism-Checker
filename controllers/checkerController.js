@@ -2,7 +2,7 @@ const { exec } = require("child_process");
 const pdfParse = require('pdf-parse')
 const fs = require('fs');
 const fsp = require('fs').promises;
-const Buffer = require('../models/buffer');
+const Buffer = require('../models/bufferFile');
 const Result = require('../models/result');
 const path = require('path');
 
