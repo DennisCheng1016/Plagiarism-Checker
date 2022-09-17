@@ -95,7 +95,7 @@ const uploadFiles = async(req, res) => {
         if(!req.files) return res.status.json({ msg: "No upload files"})
         const files = req.files.file
         const subjectCode = req.body.subjectCode
-        const assignment = req.body.assignment
+        const assignmentName = req.body.assignmentName
         const dataType = req.body.dataType
         const user = await User.findOne({email: req.email})
         const username = user.username
@@ -104,7 +104,7 @@ const uploadFiles = async(req, res) => {
                 const saveFile = new fileBuffer({
                     userName: username, 
                     subjectCode: subjectCode, 
-                    assignmentName: assignment, 
+                    assignmentName: assignmentName, 
                     dataType: dataType,
                     fileName: file.name, 
                     binary: file.data
@@ -115,7 +115,7 @@ const uploadFiles = async(req, res) => {
             const saveFile = new fileBuffer({
                 userName: username, 
                 subjectCode: subjectCode, 
-                assignmentNmae: assignment, 
+                assignmentNmae: assignmentName, 
                 dataType: dataType,
                 fileName: files.name, 
                 binary: files.data
