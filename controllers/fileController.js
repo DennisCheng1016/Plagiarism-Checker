@@ -3,6 +3,7 @@ const fs = require('fs')
 const fsp = require('fs').promises
 const fileBuffer = require('../models/bufferFile')
 const path = require('path')
+const User = require('../models/user')
 
 let fileName
 let resultText
@@ -96,13 +97,14 @@ const uploadFiles = async(req, res) => {
         const subjectCode = req.body.subjectCode
         const assignment = req.body.assignment
         const dataType = req.body.dataType
-        const user = req.email
+        const user = await User.findOne({email: req.email})
+        const username = user.username
         if(Array.isArray(files)){
             files.forEach(async(file) => {
                 const saveFile = new fileBuffer({
-                    user: user, 
+                    userName: username, 
                     subjectCode: subjectCode, 
-                    assignment: assignment, 
+                    assignmentName: assignment, 
                     dataType: dataType,
                     fileName: file.name, 
                     binary: file.data
@@ -111,9 +113,9 @@ const uploadFiles = async(req, res) => {
             })
         } else {
             const saveFile = new fileBuffer({
-                user: user, 
+                userName: user, 
                 subjectCode: subjectCode, 
-                assignment: assignment, 
+                assignmentNmae: assignment, 
                 dataType: dataType,
                 fileName: files.name, 
                 binary: files.data
