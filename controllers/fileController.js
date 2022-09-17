@@ -113,7 +113,7 @@ const uploadFiles = async(req, res) => {
             })
         } else {
             const saveFile = new fileBuffer({
-                userName: user, 
+                userName: username, 
                 subjectCode: subjectCode, 
                 assignmentNmae: assignment, 
                 dataType: dataType,
