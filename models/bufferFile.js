@@ -13,7 +13,7 @@ const bufferSchema = new mongoose.Schema({
         type: String, 
         require: true, 
     }, 
-    assignmentNmae:{
+    assignmentName:{
         type: String, 
         require: true
     }, 

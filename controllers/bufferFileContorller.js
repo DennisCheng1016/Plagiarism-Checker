@@ -5,7 +5,7 @@ const getBufferFiles = async(req, res) => {
     try{
         const subjectCode = req.query.subjectCode
         const assignmentName = req.query.assignmentName
-        const files = await fileBuffer.find({subjectCode: subjectCode, assignment: assignmentName}).select("-binary")
+        const files = await fileBuffer.find({subjectCode: subjectCode, assignmentName: assignmentName}).select("-binary")
         return res.status(200).json(files)
     } catch(error){
         res.status(500).json({msg: error.message})
