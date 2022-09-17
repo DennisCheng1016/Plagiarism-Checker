@@ -5,5 +5,6 @@ subjectRouter.post("/createSubject", subjectController.createSubject);
 subjectRouter.post("/addSubject", subjectController.addSubject);
 subjectRouter.post("/deleteSubject", subjectController.deleteSubject);
 subjectRouter.get("/getSubjectList", subjectController.getSubjectList);
+subjectRouter.get("/getSubjectListAdmin", subjectController.getSubjectListAdmin);
 
 module.exports = subjectRouter;
