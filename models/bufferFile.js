@@ -5,7 +5,7 @@ const mongoose = require("mongoose")
 
 const bufferSchema = new mongoose.Schema({
 
-    user:{
+    userName:{
         type: String, 
         require: true
     }, 
@@ -13,7 +13,7 @@ const bufferSchema = new mongoose.Schema({
         type: String, 
         require: true, 
     }, 
-    assignment:{
+    assignmentNmae:{
         type: String, 
         require: true
     }, 
