@@ -115,7 +115,7 @@ const uploadFiles = async(req, res) => {
             const saveFile = new fileBuffer({
                 userName: username, 
                 subjectCode: subjectCode, 
-                assignmentNmae: assignmentName, 
+                assignmentName: assignmentName,
                 dataType: dataType,
                 fileName: files.name, 
                 binary: files.data
