@@ -9,7 +9,10 @@ const path = require('path');
 const postCheckConfig = async(req, res) => {
     try{
         let filesInPassed;
-        const filesInBuffer = await Buffer.find({subjectCode: req.body.subjectCode, assignment: req.body.assignment, dataType: req.body.dataType});
+        console.log(req.body.subjectCode);
+        console.log(req.body.assignment);
+        const filesInBuffer = await Buffer.find({subjectCode: req.body.subjectCode, assignment: req.body.assignment});
+        // console.log(filesInBuffer);
         res.status(200).send({msg:"success"});
         initiateCheck(filesInBuffer, filesInPassed, req.body.subjectCode, req.body.assignment, req.body.dataType, req.email);
     } catch(err) {
