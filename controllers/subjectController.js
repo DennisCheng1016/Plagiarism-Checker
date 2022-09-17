@@ -57,7 +57,7 @@ const deleteSubject = async(req, res) => {
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
         if(!await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
         const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subject._id}})
-        const result2 = await Subject.deleteOne({subjectCode: subjectCode})
+        // const result2 = await Subject.deleteOne({subjectCode: subjectCode})
         return res.status(200).json({msg: "Delete subject successfully"})
     } catch(error){
         res.status(500).json({msg: error.message})
@@ -67,12 +67,21 @@ const deleteSubject = async(req, res) => {
 const getSubjectList = async(req, res) => {
     try{
         const userEmail = req.email
-        console.log(userEmail)
+        // console.log(userEmail)
         // const subjects = await User.find({email: userEmail}).populate("subjects")
         const user = await User.findOne({email: userEmail}).populate("subjects")
-        console.log(user)
-        console.log(user.subjects)
+        // console.log(user)
+        // console.log(user.subjects)
         return res.status(200).json(user.subjects)
+    } catch(error){
+        res.status(500).json({msg: error.message})
+    }
+}
+const getSubjectListAdmin = async(req, res) =>{
+    try{
+        const userEmail = req.email
+        const subjects = await Subject.find({})
+        return res.status(200).json(subjects)
     } catch(error){
         res.status(500).json({msg: error.message})
     }
@@ -82,5 +91,6 @@ module.exports = {
     createSubject, 
     addSubject, 
     deleteSubject, 
-    getSubjectList
+    getSubjectList, 
+    getSubjectListAdmin
 }
