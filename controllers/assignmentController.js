@@ -1,4 +1,3 @@
-const Admin = require('../models/admin')
 const Assignment = require('../models/assignment')
 const Subject = require('../models/subject')
 const User = require('../models/user')
@@ -33,8 +32,8 @@ const deleteAssignment = async(req, res) => {
         const subjectCode = req.body.subjectCode
         if(!await User.findOne({email: userEmail, role: "teacher"})) return res.status(409).json({mag: "Must be teacher to perform"});
         if(!await Subject.findOne({subjectCode: subjectCode, assignments: assignmentID})) return res.status(409).json({mag: "Subject not found or subject does not have this assignment"});
-        const assignment = await Assignment.findById(assignmentID) 
-        if(!assignment) return res.status(409).json({mag: "Assignment does not exist"}); 
+        const assignment = await Assignment.findById(assignmentID)
+        if(!assignment) return res.status(409).json({mag: "Assignment does not exist"});
         else{
             const result = await Subject.updateOne({subjectCode: subjectCode}, {$pull: {assignments: assignment._id}})
             const result2 = await Assignment.deleteOne({_id: assignmentID})
@@ -60,5 +59,5 @@ const getAssignmentList = async(req, res) => {
 module.exports = {
     createAssignment,
     deleteAssignment,
-    getAssignmentList 
+    getAssignmentList
 }

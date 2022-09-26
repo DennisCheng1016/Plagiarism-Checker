@@ -9,9 +9,10 @@ const resultRouter = require("./routes/resultRouter");
 const subjectRouter = require("./routes/subjectRouter");
 const assignmentRouter = require("./routes/assignmentRouter");
 const bufferFileRouter = require("./routes/bufferFileRouter")
+const userRouter = require("./routes/userRouter");
+const adminRouter = require('./routes/adminRouter');
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
-const adminRouter = require('./routes/adminRouter')
 require('dotenv').config();
 // console.log(process.env)
 
@@ -20,6 +21,7 @@ connectDB();
 
 const app = express();
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload());
 
@@ -30,14 +32,15 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
-app.use("/admin", adminRouter);
 app.use(verifyToken);
+app.use("/user",userRouter);
 app.use("/file", fileRouter);
 app.use("/check", checkerRouter);
 app.use("/result", resultRouter);
 app.use("/subject",  subjectRouter);
 app.use("/assignment",  assignmentRouter);
 app.use("/buffer",  bufferFileRouter);
+app.use("/admin", adminRouter);
 
 mongoose.connection.once('open', () => {
     console.log("Connected to MongoDB");
