@@ -1,46 +1,53 @@
-//link to User model
-const Admin = require('../models/admin')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+const Permission = require('../models/permission')
 
-// User login.
-async function login(req, res) {
-    // Find the admin. 
-    let admin = await Admin.findOne({ adminName: req.body.adminName });
+// a function that gets all user
+async function getAllUser(req, res) {
+    // get the user by email
+    let users = await User.find({});
 
-    // If the user isn't found.
-    if (!admin) {
-        return res.status(409).json(
-            { msg: "Admin not found" }
-        );
-    }
-
-    // If the password is incorrect.
-    const match = bcrypt.compareSync(req.body.password, admin.password);
-    if (!match) {
-        return res.status(409).json(
-            { msg: "Incorrect name/password." }
-        );
-    }
-
-    // If the password is correct, issue token.
-    else {
-        const token = generateToken(req);
-        res.status(200).json(
-            { token: token }
-        );
-    }
+    // sent message to front-end
+    res.status(200).json(users);
 }
 
-// Generate token function.
-function generateToken(req) {
-    const tokenData = {
-        adminName: req.body.adminNAme
-    }
-    const token = jwt.sign(tokenData, process.env.TOKEN_SIGNATURE, { expiresIn: '1d' });
-    return token
+// a function gets all permissions for teacher to register
+async function getAllPermission(req, res) {
+    // get the permission by email
+    let permission = await Permission.find({});
+
+    // sent message to front-end
+    res.status(200).json(permission);
 }
 
-module.exports = {
-    login,
+// a function to update user account, e.g. username, account status!
+async function updateUser(req, res) {
+    const {userEmail, update} = req.body;
+    console.log({userEmail});
+
+    // get the user by email
+    let users = await User.findOneAndUpdate({email: userEmail}, update, {new: true});
+
+    // sent message to front-end
+    res.status(200).json(users);
 }
+
+// a function to permit teachers to register
+async function permitTeacherRegistration(req, res) {
+    const {email} = req.body;
+
+    // identify if the email has been permitted
+    const exist = await Permission.findOne({email});
+    if (exist) {
+        throw new Error("the teacher's email has been permitted")
+    }
+
+    // create the permission
+    await Permission.create({
+        email
+    });
+
+    // sent message to front-end
+    res.status(200).json({msg: "permitted registration"});
+}
+
+module.exports = {getAllUser, getAllPermission, updateUser, permitTeacherRegistration}

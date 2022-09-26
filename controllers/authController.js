@@ -2,124 +2,71 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Permission = require('../models/permission')
 
-// User registation. 
+// User registration.
 async function register(req, res) {
 
     // Front-end will check username, email and password are valid
-    try {
+    const {username, email, password, role} = req.body;
 
-        // Check if the email already exists.
-        let existingEmail = await User.findOne({ email: req.body.email });
-        if (existingEmail) {
-            return res.status(409).json({
-                msg: "Email has been registered"
-            });
-        }
-
-        // hash the password
-        const Hashedpwd = await bcrypt.hashSync(req.body.password, 10);
-
-        // register the user.
-        const user = new User(
-            {
-                username: req.body.username,
-                email: req.body.email,
-                password: Hashedpwd,
-                role: req.body.role,
-            });
-        await user.save();
-
-        // Send success response
-        res.status(200).json({
-            msg: "registration successful"
-        });
-    } catch (error) {
-        console.log(error);
-        // handle unexpected error from promises
-        res.status(500).json({ msg: error.message })
+    // Check if the email already exists.
+    let existingEmail = await User.findOne({email});
+    if (existingEmail) {
+        throw new Error("the email has been registered, wanna try new ones?");
     }
+
+    if (role === 'teacher') {
+        let permission = await Permission.findOne({email});
+        if (!permission) {
+            throw new Error("you are not permitted to register as teacher");
+        }
+    }
+
+    // hash the password
+    const HashedPassword = await bcrypt.hashSync(password, 10);
+
+    // create account
+    await User.create({
+        username, email, password: HashedPassword, role
+    });
+
+    // Send success response
+    res.status(200).json({
+        msg: "registration successful"
+    });
 }
 
 // User login.
 async function login(req, res) {
 
-    // Find the user. 
-    let user = await User.findOne({ email: req.body.email });
+    const {email, password} = req.body;
+
+    // Find the user.
+    const user = await User.findOne({email});
 
     // If the user isn't found.
     if (!user) {
-        return res.status(409).json({
-            msg: "User not found"
-        });
+        throw new Error("User not found");
     }
 
     // If the password is incorrect.
-    const match = bcrypt.compareSync(req.body.password, user.password);
+    const match = bcrypt.compareSync(password, user.password);
     if (!match) {
-        return res.status(409).json({
-            msg: "Incorrect email/password."
-        });
+        throw new Error("Incorrect email/password.");
     }
 
-    // If the password is correct, issue token.
-    else {
-        const token = generateToken(req);
-        const role = user.role;
-        res.status(200).json({
-            token: token,
-            role: role
-        });
+    if (user.accountStatus === "disabled") {
+        throw new Error("Your account has been disabled by administrator");
     }
-}
 
-// Generate token function.
-function generateToken(req) {
-    const tokenData = {
-        email: req.body.email
-    }
-    const token = jwt.sign(tokenData, process.env.TOKEN_SIGNATURE, { expiresIn: '1d' });
-    return token
-}
-
-// get user information from token
-async function getUserInfo(req, res) {
-
-    // get token from header
-    let token = req.headers.token;
-
-    // if token does not exist, return error message
-    if (!token) {
-        return res.status(409).json({
-            msg: "Invalid token."
-        });
-    } else {
-
-        // Verify token.
-        jwt.verify(token, process.env.TOKEN_SIGNATURE, async (err, data) => {
-
-            // Incorrect token.
-            if (err) {
-                return res.status(409).json(
-                    { msg: "Invalid token." }
-                );
-            }
-            // get the user by email
-            let user = await User.findOne({ email: data.email });
-            
-            // sent message to front-end
-            res.status(200).json({
-                username: user.username,
-                email: user.email,
-                role: user.role,
-                subjects: user.subjects
-            });
-        });
-    }
+    const Authorization = "Bearer " + jwt.sign({email}, process.env.TOKEN_SIGNATURE, {expiresIn: '1d'});
+    const role = user.role;
+    res.status(200).json({
+        Authorization, role: role
+    });
 }
 
 module.exports = {
-    register,
-    login,
-    getUserInfo
+    register, login
 }

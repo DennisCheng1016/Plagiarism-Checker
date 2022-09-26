@@ -1,4 +1,3 @@
-const Admin = require('../models/admin')
 const Subject = require('../models/subject')
 const User = require('../models/user')
 
@@ -22,9 +21,9 @@ const createSubject = async(req, res) => {
         if(await Subject.findOne({subjectCode: subjectCode})) return res.status(409).json({mag: "SubjectCode has been used"});
         const subjectName = req.body.subjectName
         const newSubject = new Subject({
-            subjectCode: subjectCode, 
+            subjectCode: subjectCode,
             subjectName: subjectName,
-            teachers: teacher._id 
+            teachers: teacher._id
         })
         // console.log(newSubject._id)
         const result = await User.updateOne({email: teacherEmail}, {$push: {subjects: newSubject._id}})
@@ -42,7 +41,7 @@ const addSubject = async(req, res) => {
         const subjectCode = req.body.subjectCode
         const subject = await Subject.findOne({subjectCode: subjectCode})
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-        if(await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject already existed"}); 
+        if(await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject already existed"});
         const result = await User.updateOne({email: userEmail}, {$push: {subjects: subject._id}})
         return res.status(200).json({msg: "Add subject successfully"})
     } catch(error){
@@ -55,7 +54,7 @@ const deleteSubject = async(req, res) => {
         const subjectCode = req.body.subjectCode
         const subject = await Subject.findOne({subjectCode: subjectCode})
         if(!subject) return res.status(409).json({ msg: "Subject not found"});
-        if(!await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"}); 
+        if(!await User.findOne({email: userEmail, subjects: subject._id})) return res.status(409).json({ msg: "Subject does not exist in the subjectList"});
         const result = await User.updateOne({email: userEmail}, {$pull: {subjects: subject._id}})
         // const result2 = await Subject.deleteOne({subjectCode: subjectCode})
         return res.status(200).json({msg: "Delete subject successfully"})
@@ -88,9 +87,9 @@ const getSubjectListAdmin = async(req, res) =>{
 }
 
 module.exports = {
-    createSubject, 
-    addSubject, 
-    deleteSubject, 
-    getSubjectList, 
+    createSubject,
+    addSubject,
+    deleteSubject,
+    getSubjectList,
     getSubjectListAdmin
 }
