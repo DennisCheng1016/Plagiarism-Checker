@@ -11,6 +11,7 @@ const assignmentRouter = require("./routes/assignmentRouter");
 const bufferFileRouter = require("./routes/bufferFileRouter")
 const userRouter = require("./routes/userRouter");
 const adminRouter = require('./routes/adminRouter');
+const verifyAdmin = require('./middlewares/verifyAdmin').verifyAdmin;
 const { default: mongoose } = require('mongoose');
 const connectDB = require('./Config/connectMongo');
 require('dotenv').config();
@@ -40,6 +41,7 @@ app.use("/result", resultRouter);
 app.use("/subject",  subjectRouter);
 app.use("/assignment",  assignmentRouter);
 app.use("/buffer",  bufferFileRouter);
+app.use(verifyAdmin);
 app.use("/admin", adminRouter);
 
 mongoose.connection.once('open', () => {
