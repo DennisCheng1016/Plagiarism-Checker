@@ -100,8 +100,9 @@ const uploadFiles = async(req, res) => {
         const user = await User.findOne({email: req.email})
         const username = user.username
         if(Array.isArray(files)){
-            files.forEach(async(file) => {
-                const saveFile = new fileBuffer({
+            for (const file of files){
+            // files.forEach(async (file) => {
+                const saveFile =  new fileBuffer({
                     userName: username, 
                     subjectCode: subjectCode, 
                     assignmentName: assignmentName, 
@@ -109,24 +110,26 @@ const uploadFiles = async(req, res) => {
                     fileName: file.name, 
                     binary: file.data
                 })
-                saveFile.save()
-            })
+                console.log(saveFile.fileName)
+                
+                await saveFile.save()
+            }
         } else {
             const saveFile = new fileBuffer({
                 userName: username, 
                 subjectCode: subjectCode, 
-                assignmentNmae: assignmentName, 
+                assignmentName: assignmentName, 
                 dataType: dataType,
                 fileName: files.name, 
                 binary: files.data
             })
-            saveFile.save()
+            await saveFile.save()
         }
 
         return res.status(200).json({ msg: "Files uploaded"})
 
     } catch(error){
-        res.status(500).json({msg: error.message})
+        res.status(500).json({msg: error})
     }
 } 
 

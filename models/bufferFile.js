@@ -7,27 +7,27 @@ const bufferSchema = new mongoose.Schema({
 
     userName:{
         type: String, 
-        require: true
+        required: true
     }, 
     subjectCode:{
         type: String, 
-        require: true, 
+        required: true, 
     }, 
     assignmentName:{
         type: String, 
-        require: true
+        required: true, 
     }, 
     dataType:{
         type: String, 
-        require: true
+        required: true, 
     }, 
     fileName:{
         type: String, 
-        require: true
+        required: true
     }, 
     binary:{
         type: Buffer, 
-        require: true
+        required: true
     }
 })
 
