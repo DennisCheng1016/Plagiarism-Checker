@@ -16,6 +16,11 @@ const cors = require('cors');
 const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit');
 
+// Swagger
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 // Routers
 const authRouter = require('./routes/authRouter');
 const fileRouter = require('./routes/fileRouter');
@@ -48,8 +53,12 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-	res.send('SC-Quokka presents');
+	res.send(
+		'<h1>SC-Quokka Plagiarism Checker API</h1><a href="/api-docs">Documentation</a>'
+	);
 });
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('/auth', authRouter);
 app.use(verifyToken);

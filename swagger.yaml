@@ -1,0 +1,288 @@
+openapi: 3.0.0
+info:
+  title: SC Plagiarism API
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://sc-plagiarism-checker.herokuapp.com
+  variables: {}
+paths:
+  /auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Register
+      operationId: Register
+      parameters: []
+      requestBody:
+        description: 'Password must be at least 6 characters'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterRequest'
+              - example:
+                  username: test
+                  password: '123456'
+                  email: test@gmail.com
+                  role: 'student'
+            example:
+                username: test
+                password: '123456'
+                email: test@gmail.com
+                role: 'student'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      operationId: Login
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginRequest'
+              - example:
+                  email: test@gmail.com
+                  password: '123456'
+            example:
+              email: test@gmail.com
+              password: '123456'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /subject/getSubjectList:
+    get:
+      tags:
+      - Subject
+      summary: Get subject list
+      operationId: Getsubjectlist
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+components:
+  schemas:
+    RegisterRequest:
+      title: Register Request
+      required:
+      - username
+      - password
+      - email
+      - role
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+      example:
+        username: test
+        password: '123456'
+        email: test@gmail.com
+        role: student
+    LoginRequest:
+      title: LoginRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: abc@gmail.com
+        password: '123456'
+    UpdateusernameRequest:
+      title: UpdateusernameRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: XXX
+    CreatecategoryRequest:
+      title: CreatecategoryRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: breakfast
+    UpdatecategorynameRequest:
+      title: UpdatecategorynameRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: brunch
+    CreaterecipeRequest:
+      title: CreaterecipeRequest
+      required:
+      - title
+      - ingredients
+      - method
+      - category
+      - tags
+      type: object
+      properties:
+        title:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+          description: ''
+        method:
+          type: array
+          items:
+            type: string
+          description: ''
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: ''
+      example:
+        title: rice ee
+        ingredients:
+        - egg
+        - rice
+        method:
+        - '1'
+        - '2'
+        - '3'
+        category: 63302ddf7b1ea4c130f10c21
+        tags:
+        - xxx
+        - yyy
+        - zzzz
+    UpdaterecipeRequest:
+      title: UpdaterecipeRequest
+      required:
+      - title
+      - ingredients
+      - methods
+      - category
+      - tags
+      type: object
+      properties:
+        title:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+          description: ''
+        methods:
+          type: array
+          items:
+            type: string
+          description: ''
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: ''
+      example:
+        title: egg rice
+        ingredients:
+        - egg
+        - rice
+        methods:
+        - '1'
+        - '2'
+        - '3'
+        category: 63302ddf7b1ea4c130f10c21
+        tags:
+        - xxx
+        - '33333333'
+        - sdafa
+    FavoriterecipeRequest:
+      title: FavoriterecipeRequest
+      required:
+      - title
+      - ingredients
+      - methods
+      - category
+      - tags
+      type: object
+      properties:
+        title:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+          description: ''
+        methods:
+          type: array
+          items:
+            type: string
+          description: ''
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: ''
+      example:
+        title: update
+        ingredients:
+        - egg
+        - rice
+        methods:
+        - '1'
+        - '2'
+        - '3'
+        category: 63302ddf7b1ea4c130f10c21
+        tags:
+        - xxx
+        - '33333333'
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: Misc
+  description: ''
+- name: Auth
+  description: ''
+- name: Subject
