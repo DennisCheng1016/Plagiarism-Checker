@@ -39,10 +39,12 @@ const notFoundMiddleware = require('./middlewares/not-found');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
 //connect to database
 
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(fileUpload());
+app.use(express.json());
+app.use(helmet());
+app.use(cors());
+app.use(xss());
 
 app.set('trust proxy', 1);
 app.use(
