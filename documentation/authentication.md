@@ -8,12 +8,12 @@
 
 **Parameter**
 
-| Parameter | Value type |
-| --------- | ---------- |
-| username  | String     |
-| email     | String     |
-| password  | String     |
-| role  | enum: ["student", "teacher"]     |
+| Parameter | body/headers | Value type                   |
+| --------- |--------------|------------------------------|
+| username  | body         |  String                      |
+| email     | body         | String                       |
+| password  | body         | String                       |
+| role  | body         | enum: ["student", "teacher"] |
 
 **Response**
 
@@ -34,10 +34,10 @@ status code: 200
 
 **Parameter**
 
-| Parameter | explain  | Value type |
-| --------- | -------- | ---------- |
-| email     | email    | String     |
-| password  | password | String     |
+| Parameter | body/headers | explain | Value type |
+| --------- |--------------|----------| ---------- |
+| email     | body         |email    | String     |
+| password  | body         |password | String     |
 
 **Response**
 
@@ -49,3 +49,50 @@ status code: 200
 }
 ```
 
+***
+
+#### Send authentication email
+
+- [x] completed
+
+**url** 	```/auth/recoverEmail```
+
+**Parameter**
+
+| Parameter | body/headers | explain  | Value type |
+|----------|--------------|----------| ---------- |
+| authorization | headers      | token    | String  |
+| password | body         | password | String  |
+
+**Response**
+
+status code: 200
+```json
+{
+    "msg": "Success"
+}
+```
+
+***
+
+#### reset password
+
+- [x] completed
+
+**url** 	```/user/resetPassword```
+
+**Parameter**
+
+| Parameter | body/headers | explain  | Value type |
+|----------|--------------|----------| ---------- |
+| authorization | headers      | token    | String  |
+| password | body         | password | String  |
+
+**Response**
+
+status code: 200
+```json
+{
+    "msg": "Success"
+}
+```
