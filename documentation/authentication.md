@@ -44,10 +44,17 @@ status code: 200
 status code: 200
 ```json
 {
-    "Authorization": "Bearer token",
-    "role": "role"
+  "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzNhOGRlNDRiZjE0MDEzMmVlMmIxOWEiLCJ1c2VybmFtZSI6InJ1aW1pbmciLCJlbWFpbCI6Im5lZ3Jvbml4aWVAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwic3ViamVjdHMiOltdLCJhY2NvdW50U3RhdHVzIjoiYWN0aXZlIiwiaWF0IjoxNjY0ODc1OTIxLCJleHAiOjE2NjQ5NjIzMjF9.AwGtQahVhiGpnAkwcNhLhBzvxWlNlO2XMi7qw7zpQ4w",
+  "role": "admin",
+  "_id": "633a8de44bf140132ee2b19a",
+  "username": "ruiming",
+  "email": "negronixie@gmail.com",
+  "subjects": [],
+  "accountStatus": "active"
 }
 ```
+
+
 
 ***
 

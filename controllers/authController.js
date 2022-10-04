@@ -60,12 +60,14 @@ async function login(req, res) {
         throw new Error('Your account has been disabled by administrator');
     }
 
-    const Authorization = jwt.sign({email}, process.env.TOKEN_SIGNATURE, {
+    const {_id, username, role, subjects, accountStatus} = user;
+
+    const Authorization = jwt.sign({_id, username, email, role, subjects, accountStatus}, process.env.TOKEN_SIGNATURE, {
         expiresIn: '1d',
     });
-    const role = user.role;
+
     res.status(200).json({
-        Authorization, role: role,
+        Authorization, role, _id, username, email, subjects, accountStatus
     });
 }
 
