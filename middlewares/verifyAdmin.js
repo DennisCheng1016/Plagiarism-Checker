@@ -1,10 +1,8 @@
 const User = require("../models/user");
 
 async function verifyAdmin(req, res, next) {
-    const user = await User.findOne({email: req.email});
-    if (user.role !== "admin") {
+    if (req.user.role !== "admin")
         return res.status(401).json({msg: "you are not administrator!"});
-    }
     next();
 }
 
