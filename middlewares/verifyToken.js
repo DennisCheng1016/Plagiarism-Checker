@@ -1,31 +1,25 @@
-require('dotenv').config()
-const jwt = require('jsonwebtoken')
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const {stdout} = require("nodemon/lib/config/defaults");
 
 function verifyToken(req, res, next) {
-    const token = req.headers.token;
+	const authHeader = req.headers.authorization;
+	if (!authHeader || !authHeader.startsWith('Bearer')) {
+		return res.status(400).json({ msg: 'no token provided' });
+	}
+	const token = authHeader.split(' ')[1];
 
-    // If no token. 
-    if (token == null) {
-        return res.status(400).json(
-            { msg: "no token provided" }
-        );
-    }
-
-    // Verify token.
-    jwt.verify(token, process.env.TOKEN_SIGNATURE, (err, data) => {
-
-        // Incorrect token.
-        if (err) {
-            return res.status(400).json(
-                { msg: "Invalid token." }
-            );
-        }
-
-        req.email = data.email;
-        next();
-    });
+	try {
+		const payload = jwt.verify(token, process.env.TOKEN_SIGNATURE);
+		// attach the user to the job routes
+		req.email = payload.email;
+		req.user = payload;
+		next();
+	} catch (error) {
+		return res.status(401).json({ msg: error.message });
+	}
 }
 
 module.exports = {
-    verifyToken
-}
+	verifyToken,
+};

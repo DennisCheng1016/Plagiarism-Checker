@@ -37,24 +37,16 @@ describe('checkAuth', () => {
         expect(data.msg).toBe("registration successful");
     });
 
-    test('status 409 when account has been registered', async () => {
-
-        // set up mock req and res
+    it('should throw error when account has been registered', async function () {
         var req = httpMocks.createRequest({
             body: { username: "validName", email: "validemail@test.com", password: "Pwd123456", role: "student" }
         });
         var res = httpMocks.createResponse();
-
-        await auth.register(req, res);
-
-        // assert the status code is 409
-        expect(res.statusCode).toBe(409);
-
-        // get data that sent to res
-        data = JSON.parse(res._getData());
-
-        //assert the error message is correct
-        expect(data.msg).toBe("Email has been registered");
+        try {
+            await auth.register(req, res)
+        } catch (e) {
+            expect(e).toEqual(new Error("the email has been registered, wanna try new ones?"));
+        }
     });
 
     test('should return status 200 when login with correct info', async () => {
@@ -73,14 +65,15 @@ describe('checkAuth', () => {
         // get data that sent to res
         data = JSON.parse(res._getData());
 
+
+
         // decode the token to get email
-        var emailGet;
-        jwt.verify(data.token, process.env.TOKEN_SIGNATURE, (err, user) => {
-            emailGet = user.email;
-        });
+        const payload = jwt.verify(data.Authorization, process.env.TOKEN_SIGNATURE);
 
         // assert if the decoded info is correct
-        expect(emailGet).toBe("validemail@test.com");
+        expect(payload.username).toBe("validName");
+        expect(payload.email).toBe("validemail@test.com");
+        expect(payload.role).toBe("student");
     });
 
     test('status 409 when login with incorrect info', async () => {
@@ -91,16 +84,11 @@ describe('checkAuth', () => {
         });
         var res = httpMocks.createResponse();
 
-        await auth.login(req, res);
-
-        // assert the status code is 200
-        expect(res.statusCode).toBe(409);
-
-        // get data that sent to res
-        data = JSON.parse(res._getData());
-
-        //assert the error message is correct
-        expect(data.msg).toBe("Incorrect email/password.");
+        try {
+            await auth.login(req, res);
+        } catch (e) {
+            expect(e).toEqual(new Error('Incorrect email/password.'));
+        }
     });
 });
 
