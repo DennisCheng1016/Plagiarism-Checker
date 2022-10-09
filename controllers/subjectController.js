@@ -1,6 +1,20 @@
 const Subject = require('../models/subject');
 const User = require('../models/user');
+const {
+	BadRequestError,
+	UnauthenticatedError,
+	NotFoundError,
+} = require('../errors');
+const { StatusCodes } = require('http-status-codes');
+const { create } = require('../models/subject');
 
+const getSubjectListAdmin = async (req, res) => {
+	if (req.user.role !== 'admin')
+		throw new UnauthenticatedError('Only admin can get all subjects');
+	const subjects = await Subject.find({}).select('-__v').sort('subjectCode');
+
+	return res.status(StatusCodes.OK).json(subjects);
+};
 const getSubjectList = async (req, res) => {
 	const userEmail = req.email;
 	const user = await User.findOne({ email: userEmail }).populate({
@@ -10,67 +24,84 @@ const getSubjectList = async (req, res) => {
 			path: 'teachers',
 			select: 'username',
 		},
+		options: { sort: { subjectCode: 1 } },
 	});
 	return res.status(200).json(user.subjects);
 };
 
 const createSubject = async (req, res) => {
-	try {
-		// const adminEmail = req.email
-		// let admin = await Admin.findOne({email: adminEmail});
-		// if (!admin) {
-		//     return res.status(409).json(
-		//         { msg: "Admin not found" }
-		//     );
-		// }
-
-		const subjectCode = req.body.subjectCode;
-		const teacherEmail = req.body.teacherEmail;
-		// console.log(teacherEmail)
-		const teacher = await User.findOne({
-			email: teacherEmail,
-			role: 'teacher',
-		});
-		if (!teacher) res.status(409).json({ msg: 'Teacher not found' });
-		if (!subjectCode)
-			return res.status(409).json({ msg: 'No subjectCode!' });
-		if (await Subject.findOne({ subjectCode: subjectCode }))
-			return res.status(409).json({ mag: 'SubjectCode has been used' });
-		const subjectName = req.body.subjectName;
-		const newSubject = new Subject({
-			subjectCode: subjectCode,
-			subjectName: subjectName,
-			teachers: teacher._id,
-		});
-		// console.log(newSubject._id)
-		const result = await User.updateOne(
-			{ email: teacherEmail },
-			{ $push: { subjects: newSubject._id } }
-		);
-		newSubject.save();
-		return res.status(200).json({ msg: 'Create subject successfully' });
-	} catch (error) {
-		res.status(500).json({ msg: error.message });
+	if (req.user.role !== 'admin')
+		throw new UnauthenticatedError('Only admin can create subject');
+	const { subjectCode, subjectName, teachers } = req.body;
+	const teachersId = [];
+	if (teachers) {
+		for (const teacherEmail of teachers) {
+			let teacher = await User.findOne({
+				email: teacherEmail,
+				role: 'teacher',
+			}).select('_id');
+			if (!teacher) throw new NotFoundError('Teacher email is incorrect');
+			teachersId.push(teacher);
+		}
 	}
-};
-
-const addSubject = async (req, res) => {
-	try {
-		const userEmail = req.email;
-		const subjectCode = req.body.subjectCode;
-		const subject = await Subject.findOne({ subjectCode: subjectCode });
-		if (!subject) return res.status(409).json({ msg: 'Subject not found' });
-		if (await User.findOne({ email: userEmail, subjects: subject._id }))
-			return res.status(409).json({ msg: 'Subject already existed' });
+	const subject = await Subject.create({
+		subjectCode,
+		subjectName,
+		teachers: teachersId,
+	});
+	for (const teacherId of teachersId) {
 		const result = await User.updateOne(
-			{ email: userEmail },
+			{ _id: teacherId, role: 'teacher' },
 			{ $push: { subjects: subject._id } }
 		);
-		return res.status(200).json({ msg: 'Add subject successfully' });
-	} catch (error) {
-		res.status(500).json({ msg: error.message });
 	}
+	return res.status(StatusCodes.CREATED).json({ subject });
 };
+
+const updateSubject = async (req, res) => {
+	if (req.user.role !== 'admin')
+		throw new UnauthenticatedError('Only admin can create subject');
+	const {
+		body: { subjectCode, subjectName, teachers },
+		params: { id: subjectId },
+	} = req;
+	const subject = await Subject.findOneAndUpdate(
+		{ _id: subjectId },
+		{ subjectCode, subjectName },
+		{ new: true, runValidators: true }
+	);
+	if (!subject) throw new NotFoundError(`No subject with id ${subjectId}`);
+	const teachersId = [];
+	if (teachers) {
+		for (const teacherEmail of teachers) {
+			let teacher = await User.findOne({
+				email: teacherEmail,
+				role: 'teacher',
+			}).select('_id');
+			if (!teacher) throw new NotFoundError('Teacher email is incorrect');
+			teachersId.push(teacher);
+		}
+	}
+	for (const preTeacherId of subject.teachers) {
+		let teacher = await User.updateOne(
+			{ _id: preTeacherId, role: 'teacher' },
+			{ $pull: { subjects: subject._id } }
+		);
+		subject.teachers.pull(preTeacherId);
+		await subject.save();
+	}
+	for (const teacherId of teachersId) {
+		let teacher = await User.findOneAndUpdate(
+			{ _id: teacherId, role: 'teacher' },
+			{ $push: { subjects: subject._id } }
+		);
+		subject.teachers.push(teacherId);
+		await subject.save();
+	}
+	const finalSubject = await Subject.findById(subjectId);
+	return res.status(StatusCodes.CREATED).json({ finalSubject });
+};
+
 const deleteSubject = async (req, res) => {
 	try {
 		const userEmail = req.email;
@@ -92,20 +123,38 @@ const deleteSubject = async (req, res) => {
 	}
 };
 
-const getSubjectListAdmin = async (req, res) => {
-	try {
-		const userEmail = req.email;
-		const subjects = await Subject.find({});
-		return res.status(200).json(subjects);
-	} catch (error) {
-		res.status(500).json({ msg: error.message });
-	}
+const addStudent = async (req, res) => {
+	const subjectCode = req.body.subjectCode;
+	const subject = await Subject.findOne({ subjectCode: subjectCode });
+	if (!subject)
+		throw new NotFoundError(`No subject with code ${subjectCode}`);
+	if (
+		await User.findOne({
+			_id: req.user._id,
+			subjects: { $in: [subject._id] },
+		})
+	)
+		throw new BadRequestError('Subject exists');
+	const student = await User.findOneAndUpdate(
+		{ _id: req.user._id, role: 'student' },
+		{ $push: { subjects: subject._id } },
+		{ new: true, runValidators: true }
+	);
+	subject.students.push(student);
+	await subject.save();
+	return res.status(StatusCodes.OK).json();
 };
 
 module.exports = {
 	createSubject,
-	addSubject,
+	updateSubject,
+	addStudent,
 	deleteSubject,
 	getSubjectList,
 	getSubjectListAdmin,
 };
+
+function paginate(array, page_size, page_number) {
+	// human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+	return array.slice((page_number - 1) * page_size, page_number * page_size);
+}

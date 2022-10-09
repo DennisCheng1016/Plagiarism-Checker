@@ -1,28 +1,41 @@
-const mongoose = require("mongoose")
-// const user = require('./user')
+const mongoose = require('mongoose');
 
 /* -------------------------------------- MODEL -------------------------------------- */
-const subjectSchema = new mongoose.Schema({
+const subjectSchema = new mongoose.Schema(
+	{
+		subjectCode: {
+			type: String,
+			required: [true, 'Please provide subject code'],
+			trim: true,
+			unique: true,
+		},
+		subjectName: {
+			type: String,
+			trim: true,
+			required: [true, 'Please provide subject name'],
+		},
+		teachers: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+			},
+		],
+		students: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+			},
+		],
+		assignments: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Assignment',
+			},
+		],
+	},
+	{ timestamps: true }
+);
 
-    subjectCode: {
-        type: String, 
-        require: true, 
-        unique: true
-    }, 
-    subjectName: {
-        type: String, 
-        require: true
-    }, 
-    teachers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }], 
-    assignments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Assignment'
-    }]
-})
+const Subject = mongoose.model('Subject', subjectSchema);
 
-const Subject = mongoose.model("Subject", subjectSchema)
-
-module.exports = Subject
+module.exports = Subject;
