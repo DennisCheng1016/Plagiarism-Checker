@@ -1,10 +1,14 @@
 const subjectRouter = require('express').Router();
-const subjectController = require('../controllers/subjectController');
+const {
+	createSubject,
+	updateSubject,
+	getSubjectList,
+	getSubjectListAdmin,
+	addStudent,
+} = require('../controllers/subjectController');
 
-subjectRouter.post("/createSubject", subjectController.createSubject);
-subjectRouter.post("/addSubject", subjectController.addSubject);
-subjectRouter.post("/deleteSubject", subjectController.deleteSubject);
-subjectRouter.get("/getSubjectList", subjectController.getSubjectList);
-subjectRouter.get("/getSubjectListAdmin", subjectController.getSubjectListAdmin);
+subjectRouter.route('/admin/').get(getSubjectListAdmin).post(createSubject);
+subjectRouter.route('/admin/:id').patch(updateSubject);
+subjectRouter.route('/').get(getSubjectList).post(addStudent);
 
 module.exports = subjectRouter;
