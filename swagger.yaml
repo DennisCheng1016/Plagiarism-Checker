@@ -277,6 +277,25 @@ paths:
       deprecated: false
       security:
       - bearer: []
+    delete:
+      tags:
+      - Assignment
+      summary: Delete assignment
+      operationId: Deleteassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
   /dataset/{id}:
     get:
       tags:
