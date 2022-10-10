@@ -107,32 +107,6 @@ async function sendAuthenticationEmail(req, res) {
     });
 }
 
-// User login.
-async function resetPassword(req, res) {
-    const email = req.email;
-    const password = req.body.password;
-
-    // Find the user.
-    const user = await User.findOne({email});
-
-    // If the user isn't found.
-    if (!user) {
-        throw new Error('User not found');
-    }
-    if (user.accountStatus === 'disabled') {
-        throw new Error('Your account has been disabled by administrator');
-    }
-
-    // hash the password
-    user.password= await bcrypt.hashSync(password, 10);
-    user.save();
-
-    res.status(200).json({
-        msg: "Success"
-    });
-}
-
-
 const sendEmail = async (subject, message, sendTo, sendFrom, replyTo) => {
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST, port: 587, auth: {
@@ -156,5 +130,5 @@ const sendEmail = async (subject, message, sendTo, sendFrom, replyTo) => {
 }
 
 module.exports = {
-    register, login, resetPassword, sendAuthenticationEmail
+    register, login, sendAuthenticationEmail
 };
