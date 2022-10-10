@@ -18,7 +18,7 @@ describe('checkAuth', () => {
         await User.deleteOne({ email: 'validemail@test.com' })
     });
 
-    test('status 200 and send token when valid register', async () => {
+    test('status 201 and send token when valid register', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
@@ -28,7 +28,7 @@ describe('checkAuth', () => {
         await auth.register(req, res);
 
         // assert if the status code is 200
-        expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(201);
 
         // get data that sent to res
         data = JSON.parse(res._getData());
@@ -49,7 +49,7 @@ describe('checkAuth', () => {
         }
     });
 
-    test('should return status 200 when login with correct info', async () => {
+    test('should return status 201 when login with correct info', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
@@ -60,20 +60,15 @@ describe('checkAuth', () => {
         await auth.login(req, res);
 
         // assert the status code is 200
-        expect(res.statusCode).toBe(200);
+        expect(res.statusCode).toBe(201);
 
         // get data that sent to res
         data = JSON.parse(res._getData());
 
 
 
-        // decode the token to get email
-        const payload = jwt.verify(data.Authorization, process.env.TOKEN_SIGNATURE);
-
-        // assert if the decoded info is correct
-        expect(payload.username).toBe("validName");
-        expect(payload.email).toBe("validemail@test.com");
-        expect(payload.role).toBe("student");
+        // decode the token to get email, expect no errors
+        jwt.verify(data.Authorization, process.env.TOKEN_SIGNATURE);
     });
 
     test('status 409 when login with incorrect info', async () => {
