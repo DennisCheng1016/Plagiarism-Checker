@@ -71,8 +71,8 @@ app.use('/result', resultRouter);
 app.use('/subject', subjectRouter);
 app.use('/assignment', assignmentRouter);
 app.use('/buffer', bufferFileRouter);
-app.use(verifyAdmin);
-app.use('/admin', adminRouter);
+// app.use(verifyAdmin);
+app.use('/admin', verifyAdmin, adminRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
