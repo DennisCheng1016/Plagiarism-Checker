@@ -1,6 +1,6 @@
 const Assignment = require('../models/assignment');
 const Subject = require('../models/subject');
-const User = require('../models/user');
+const Dataset = require('../models/dataset');
 const { UnauthenticatedError, NotFoundError } = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 
@@ -8,10 +8,10 @@ const getAssignmentList = async (req, res) => {
 	const subject = await Subject.findOne({ _id: req.params.id }).populate({
 		path: 'assignments',
 		select: '-__v',
-		// populate: {
-		// 	path: 'dataset',
-		// 	select: 'datasetName',
-		// },
+		populate: {
+			path: 'datasets',
+			select: 'datasetName',
+		},
 	});
 	if (!subject)
 		throw new NotFoundError(`No subject with id ${req.params.id}`);
@@ -50,40 +50,30 @@ const updateAssignment = async (req, res) => {
 		{ new: true, runValidators: true }
 	);
 	if (!assignment)
-		throw new NotFoundError(`No subject with id ${assignmentId}`);
+		throw new NotFoundError(`No assignmentId with id ${assignmentId}`);
 	return res.status(StatusCodes.OK).json({ assignment });
 };
 
 const deleteAssignment = async (req, res) => {
-	try {
-		const userEmail = req.email;
-		const assignmentID = req.body.assignmentID;
-		const subjectCode = req.body.subjectCode;
-		if (!(await User.findOne({ email: userEmail, role: 'teacher' })))
-			return res.status(409).json({ mag: 'Must be teacher to perform' });
-		if (
-			!(await Subject.findOne({
-				subjectCode: subjectCode,
-				assignments: assignmentID,
-			}))
-		)
-			return res.status(409).json({
-				mag: 'Subject not found or subject does not have this assignment',
-			});
-		const assignment = await Assignment.findById(assignmentID);
-		if (!assignment)
-			return res.status(409).json({ mag: 'Assignment does not exist' });
-		else {
-			const result = await Subject.updateOne(
-				{ subjectCode: subjectCode },
-				{ $pull: { assignments: assignment._id } }
-			);
-			const result2 = await Assignment.deleteOne({ _id: assignmentID });
-		}
-		return res.status(200).json({ msg: 'Delete assignment successfully' });
-	} catch (error) {
-		res.status(500).json({ msg: error.message });
+	if (req.user.role !== 'teacher' && req.user.role !== 'admin')
+		throw new UnauthenticatedError(
+			'Only teacher/admin can delete assignment'
+		);
+	const assignment = await Assignment.findOneAndDelete({
+		_id: req.params.id,
+	});
+	if (!assignment)
+		throw new NotFoundError(`No assignment with id ${assignmentId}`);
+	for (const datasetId of assignment.datasets) {
+		let dataset = await Dataset.findOneAndDelete({ _id: datasetId });
+		if (!dataset)
+			throw new NotFoundError(`No dataset with id ${datasetId}`);
 	}
+	await Subject.updateOne(
+		{ _id: assignment.subjectId },
+		{ $pull: { assignments: assignment._id } }
+	);
+	return res.status(StatusCodes.OK).send();
 };
 
 module.exports = {
