@@ -13,6 +13,8 @@ const getAssignmentList = async (req, res) => {
 		// 	select: 'datasetName',
 		// },
 	});
+	if (!subject)
+		throw new NotFoundError(`No subject with id ${req.params.id}`);
 	return res.status(StatusCodes.OK).json(subject.assignments);
 };
 
@@ -47,6 +49,8 @@ const updateAssignment = async (req, res) => {
 		{ assignmentName, dueDate, threshold, maxCheckTimes },
 		{ new: true, runValidators: true }
 	);
+	if (!assignment)
+		throw new NotFoundError(`No subject with id ${assignmentId}`);
 	return res.status(StatusCodes.OK).json({ assignment });
 };
 

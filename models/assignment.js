@@ -23,8 +23,9 @@ const assignmentSchema = new mongoose.Schema(
 		maxCheckTimes: {
 			type: Number,
 			trim: true,
+			default: 3,
 		},
-		dataset: [
+		datasets: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: 'Dataset',
