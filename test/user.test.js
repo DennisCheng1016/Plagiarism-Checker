@@ -19,5 +19,15 @@ describe('checkAuth', () => {
         let data = JSON.parse(res._getData());
         expect(data.email).toBe("student1@gmail.com");
     });
+    it('status 201 resetting password', async () => {
+        const req = {};
+        // verify token will let req.user become user object
+        req.user = await User.findById('63439de4b703b94a4429086c');
+        const res = httpMocks.createResponse();
+        await userController.getUserInfo(req, res);
+        expect(res.statusCode).toBe(201);
+        let data = JSON.parse(res._getData());
+        expect(data.email).toBe("student1@gmail.com");
+    });
 });
 
