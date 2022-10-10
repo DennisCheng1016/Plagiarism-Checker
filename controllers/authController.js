@@ -87,7 +87,8 @@ async function sendAuthenticationEmail(req, res) {
         throw new Error('Your account has been disabled by administrator');
     }
 
-    const Authorization = jwt.sign({email}, process.env.TOKEN_SIGNATURE, {
+    const {_id} = user;
+    const Authorization = jwt.sign({_id}, process.env.TOKEN_SIGNATURE, {
         expiresIn: '1d',
     });
 
@@ -97,7 +98,7 @@ async function sendAuthenticationEmail(req, res) {
     const subject = "Authentication Email";
     const message = `
     <h3>Hello ${user.username}, </h3>
-    <p>This is your token: ${Authorization}</p>`;
+    <p>This is your token: <a href="http://localhost:3000/setPassword?token=${Authorization}"> click here</a></p>`;
 
 
     await sendEmail(subject, message, sendTo, sendFrom, replyTo);
