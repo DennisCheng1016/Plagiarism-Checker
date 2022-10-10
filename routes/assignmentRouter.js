@@ -1,9 +1,11 @@
 const assignmentRouter = require('express').Router();
-const assignmentController = require('../controllers/assignmentController');
+const {
+	getAssignmentList,
+	createAssignment,
+	updateAssignment,
+} = require('../controllers/assignmentController');
 
-assignmentRouter.post("/createAssignment", assignmentController.createAssignment);
-// assignmentRouter.post("/addSubject", subjectController.addSubject);
-assignmentRouter.post("/deleteAssignment", assignmentController.deleteAssignment);
-assignmentRouter.get("/getAssignmentList", assignmentController.getAssignmentList);
+assignmentRouter.route('/').post(createAssignment);
+assignmentRouter.route('/:id').get(getAssignmentList).patch(updateAssignment);
 
 module.exports = assignmentRouter;
