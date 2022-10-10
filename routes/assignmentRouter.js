@@ -3,12 +3,14 @@ const {
 	getAssignmentList,
 	createAssignment,
 	updateAssignment,
+	deleteAssignment,
 } = require('../controllers/assignmentController');
 
 assignmentRouter
 	.route('/:id')
 	.get(getAssignmentList)
 	.post(createAssignment)
-	.patch(updateAssignment);
+	.patch(updateAssignment)
+	.delete(deleteAssignment);
 
 module.exports = assignmentRouter;
