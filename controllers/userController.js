@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 async function getUserInfo(req, res) {
 
     // get the user by email
-    let user = await User.findOne({email: req.email});
+    let user = req.user;
 
     // sent message to front-end
     res.status(200).json({

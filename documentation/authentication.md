@@ -66,10 +66,9 @@ status code: 200
 
 **Parameter**
 
-| Parameter | body/headers | explain  | Value type |
-|----------|--------------|----------| ---------- |
-| authorization | headers      | token    | String  |
-| password | body         | password | String  |
+| Parameter | body/headers | explain | Value type |
+|-----------|--------------|---------| ---------- |
+| email     | body         | email   | String  |
 
 **Response**
 
