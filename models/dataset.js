@@ -1,23 +1,26 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose');
 
 /* -------------------------------------- MODEL -------------------------------------- */
-const datasetSchema = new mongoose.Schema({
+const datasetSchema = new mongoose.Schema(
+	{
+		assignmentId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Assignment',
+			required: [true, 'Please provide assignment Id'],
+		},
+		datasetName: {
+			type: String,
+			required: [true, 'Please provide dataset name'],
+			trim: true,
+		},
+		fileType: {
+			type: String,
+			required: [true, 'Please provide file type'],
+		},
+	},
+	{ timestamps: true }
+);
 
-    subjectCode: {
-        type: String, 
-        require: true, 
-    }, 
-    assignmentName: {
-        type: String, 
-        require: true
-    }, 
-    datasetName: {
-        type:String, 
-        requrie: true, 
-        unique: true
-    }
-})
+const Dataset = mongoose.model('Dataset', datasetSchema);
 
-const Dataset = mongoose.model("Dataset", datasetSchema)
-
-module.exports = Dataset
+module.exports = Dataset;
