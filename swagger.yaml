@@ -183,6 +183,100 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /assignment/{id}:
+    get:
+      tags:
+      - Assignment
+      summary: Get assignment list
+      operationId: Getassignmentlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Assignment
+      summary: Create assignment
+      operationId: Createassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      requestBody:
+        description: 'assignmentName is required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateassignmentRequest'
+              - example:
+                  assignmentName: 'testAssignmentName'
+                  dueDate: '2022-12-12'
+                  threshold: 10
+                  maxCheckTimes: 3
+            example:
+              assignmentName: 'testAssignmentName'
+              dueDate: '2022-12-12'
+              threshold: 10
+              maxCheckTimes: 3
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Assignment
+      summary: Update assignment
+      operationId: Updateassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: 'assignmentName is required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateassignmentRequest'
+              - example:
+                  assignmentName: 'updateTestAssignmentName'
+                  dueDate: '2022-12-13'
+                  threshold: 3
+                  maxCheckTimes: 10
+            example:
+              assignmentName: 'updateTestAssignmentName'
+              dueDate: '2022-12-12'
+              threshold: 3
+              maxCheckTimes: 10
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
 components:
   schemas:
     RegisterRequest:
@@ -269,16 +363,44 @@ components:
         subjectCode: updateTestSubjectCode
         subjectName: updateTestSubjectName
         teachers: ['teacher2@gmail']
-    CreatecategoryRequest:
-      title: CreatecategoryRequest
+    CreateassignmentRequest:
+      title: Create Assignment Request
       required:
-      - name
+      - assignmentName
       type: object
       properties:
-        name:
+        assignmentName:
           type: string
+        dueDate:
+          type: string
+        threshold: 
+          type: number
+        maxCheckTimes:
+          type: number
       example:
-        name: breakfast
+        assignmentName: testAssignmentName
+        dueDate: XXXX-YY-ZZ
+        threshold: 10
+        maxCheckTimes: 3
+    UpdateassignmentRequest:
+      title: Update Assignment Request
+      required:
+      - assignmentName
+      type: object
+      properties:
+        assignmentName:
+          type: string
+        dueDate:
+          type: string
+        threshold: 
+          type: number
+        maxCheckTimes:
+          type: number
+      example:
+        assignmentName: UpdateTestAssignmentName
+        dueDate: XXXX-YY-ZZ
+        threshold: 3
+        maxCheckTimes: 10
     UpdatecategorynameRequest:
       title: UpdatecategorynameRequest
       required:
@@ -428,3 +550,6 @@ tags:
 - name: Auth
   description: ''
 - name: Subject
+  description: ''
+- name: Assignment
+  description: ''  
