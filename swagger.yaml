@@ -277,6 +277,111 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /dataset/{id}:
+    get:
+      tags:
+      - Dataset
+      summary: Get dataset list
+      operationId: Getdatasetlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Dataset
+      summary: Create dataset
+      operationId: Createdataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: 'datasetName and fileType are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreatedatasetRequest'
+              - example:
+                  datasetName: 'testDatasetName'
+                  fileType: 'pdf'
+            example:
+              datasetName: 'testDatasetName'
+              fileType: 'pdf'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Dataset
+      summary: Update assignment
+      operationId: Updatedataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The dataset ID
+      requestBody:
+        description: 'datasetName and fileType are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdatedatasetRequest'
+              - example:
+                  datasetName: 'updateTestDatasetName'
+                  fileType: 'pdf'
+            example:
+              datasetName: 'updatetTestDatasetName'
+              fileType: 'pdf'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Dataset
+      summary: Delete dataset
+      operationId: Deletedataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The dataset ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
 components:
   schemas:
     RegisterRequest:
@@ -401,144 +506,33 @@ components:
         dueDate: XXXX-YY-ZZ
         threshold: 3
         maxCheckTimes: 10
-    UpdatecategorynameRequest:
-      title: UpdatecategorynameRequest
+    CreatedatasetRequest:
+      title: Create Dataset Request
       required:
-      - name
+      - datasetName
+      - fileType
       type: object
       properties:
-        name:
+        datasetName:
+          type: string
+        fileType:
           type: string
       example:
-        name: brunch
-    CreaterecipeRequest:
-      title: CreaterecipeRequest
+        datasetName: testDatasetName
+        fileType: pdf
+    UpdatedatasetRequest:
+      title: Update Dataset Request
       required:
-      - title
-      - ingredients
-      - method
-      - category
-      - tags
+      - assignmentName
       type: object
       properties:
-        title:
+        datasetName:
           type: string
-        ingredients:
-          type: array
-          items:
-            type: string
-          description: ''
-        method:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
+        fileType:
           type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
       example:
-        title: rice ee
-        ingredients:
-        - egg
-        - rice
-        method:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - yyy
-        - zzzz
-    UpdaterecipeRequest:
-      title: UpdaterecipeRequest
-      required:
-      - title
-      - ingredients
-      - methods
-      - category
-      - tags
-      type: object
-      properties:
-        title:
-          type: string
-        ingredients:
-          type: array
-          items:
-            type: string
-          description: ''
-        methods:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
-      example:
-        title: egg rice
-        ingredients:
-        - egg
-        - rice
-        methods:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - '33333333'
-        - sdafa
-    FavoriterecipeRequest:
-      title: FavoriterecipeRequest
-      required:
-      - title
-      - ingredients
-      - methods
-      - category
-      - tags
-      type: object
-      properties:
-        title:
-          type: string
-        ingredients:
-          type: array
-          items:
-            type: string
-          description: ''
-        methods:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
-      example:
-        title: update
-        ingredients:
-        - egg
-        - rice
-        methods:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - '33333333'
+        datasetName: UpdateTestDatasetName
+        fileType: image
   securitySchemes:
     bearer:
       type: http
@@ -552,4 +546,6 @@ tags:
 - name: Subject
   description: ''
 - name: Assignment
+  description: ''  
+- name: Dataset
   description: ''  
