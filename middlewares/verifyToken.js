@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const {stdout} = require("nodemon/lib/config/defaults");
+// const {stdout} = require("nodemon/lib/config/defaults");
 
 function verifyToken(req, res, next) {
 	const authHeader = req.headers.authorization;
