@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 /* -------------------------------------- MODEL -------------------------------------- */
 const assignmentSchema = new mongoose.Schema(
 	{
-		subject: {
+		subjectId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Subject',
 			required: [true, 'Please provide subject Id'],
