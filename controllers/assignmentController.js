@@ -21,8 +21,9 @@ const createAssignment = async (req, res) => {
 		throw new UnauthenticatedError(
 			'Only teacher/admin can create assignment'
 		);
-	if (!(await Subject.findById({ _id: req.body.subject })))
+	if (!(await Subject.findById({ _id: req.params.id })))
 		throw new NotFoundError(`No subject with id ${req.body.subject}`);
+	req.body.subjectId = req.params.id;
 	const assignment = await Assignment.create(req.body);
 	const subject = await Subject.findOneAndUpdate(
 		{ _id: req.body.subject },
