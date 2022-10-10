@@ -97,7 +97,7 @@ async function sendAuthenticationEmail(req, res) {
     const subject = "Authentication Email";
     const message = `
     <h3>Hello ${user.username}, </h3>
-    <p>This is your token: ${Authorization}</p>`;
+    <p>This is your token: <a href="http://localhost:3000/setPassword?token=${Authorization}"> click here</a></p>`;
 
 
     await sendEmail(subject, message, sendTo, sendFrom, replyTo);
