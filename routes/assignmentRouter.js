@@ -5,7 +5,10 @@ const {
 	updateAssignment,
 } = require('../controllers/assignmentController');
 
-assignmentRouter.route('/').post(createAssignment);
-assignmentRouter.route('/:id').get(getAssignmentList).patch(updateAssignment);
+assignmentRouter
+	.route('/:id')
+	.get(getAssignmentList)
+	.post(createAssignment)
+	.patch(updateAssignment);
 
 module.exports = assignmentRouter;
