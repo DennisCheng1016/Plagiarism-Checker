@@ -33,7 +33,7 @@ async function register(req, res) {
     });
 
     // Send success response
-    res.status(200).json({
+    res.status(201).json({
         msg: 'registration successful',
     });
 }
@@ -60,14 +60,14 @@ async function login(req, res) {
         throw new Error('Your account has been disabled by administrator');
     }
 
-    const {_id, username, role, subjects, accountStatus} = user;
+    const {_id, username, role} = user;
 
-    const Authorization = jwt.sign({_id, username, email, role, subjects, accountStatus}, process.env.TOKEN_SIGNATURE, {
+    const Authorization = jwt.sign({_id}, process.env.TOKEN_SIGNATURE, {
         expiresIn: '1d',
     });
 
-    res.status(200).json({
-        Authorization, role, _id, username, email, subjects, accountStatus
+    res.status(201).json({
+        Authorization, role, username
     });
 }
 
@@ -102,7 +102,7 @@ async function sendAuthenticationEmail(req, res) {
 
     await sendEmail(subject, message, sendTo, sendFrom, replyTo);
 
-    res.status(200).json({
+    res.status(201).json({
         msg: "success"
     });
 }
