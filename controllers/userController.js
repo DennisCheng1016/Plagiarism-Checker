@@ -19,6 +19,7 @@ async function getUserInfo(req, res) {
 
 // User login.
 async function resetPassword(req, res) {
+
     const email = req.email;
     const password = req.body.password;
 
