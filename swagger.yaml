@@ -420,6 +420,74 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /buffer/{id}:
+    get:
+      tags:
+      - Buffer
+      summary: Get buffer list
+      operationId: Getbufferlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Buffer
+      summary: Upload file
+      operationId: Uploadfile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Buffer
+      summary: Delete file
+      operationId: Deletefile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The file ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
 components:
   schemas:
     RegisterRequest:
@@ -586,4 +654,6 @@ tags:
 - name: Assignment
   description: ''  
 - name: Dataset
+  description: ''  
+- name: Buffer
   description: ''  
