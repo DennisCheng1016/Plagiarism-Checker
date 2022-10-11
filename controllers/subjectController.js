@@ -12,7 +12,13 @@ const Dataset = require('../models/dataset');
 const getSubjectListAdmin = async (req, res) => {
 	if (req.user.role !== 'admin')
 		throw new UnauthenticatedError('Only admin can get all subjects');
-	const subjects = await Subject.find({}).select('-__v').sort('subjectCode');
+	const subjects = await Subject.find({})
+		.select('-__v')
+		.sort('subjectCode')
+		.populate({
+			path: 'teachers',
+			select: 'username',
+		});
 
 	return res.status(StatusCodes.OK).json(subjects);
 };
