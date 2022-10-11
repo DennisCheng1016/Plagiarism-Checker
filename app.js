@@ -23,7 +23,6 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 // Routers
 const authRouter = require('./routes/authRouter');
-const fileRouter = require('./routes/fileRouter');
 const checkerRouter = require('./routes/checkerRouter');
 const resultRouter = require('./routes/resultRouter');
 const subjectRouter = require('./routes/subjectRouter');
