@@ -4,19 +4,29 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const Buffer = require('../models/bufferFile');
 const Result = require('../models/result');
+const Historical = require('../models/historical');
+const User = require('../models/user');
 const path = require('path');
 const { sep } = require("path");
 
 const postCheckConfig = async(req, res) => {
     try{
-        let filesInPassed;
-        console.log(req.body.assignmentId);
-        console.log(req.body.fileType);
-        console.log(req.body.user);
+        // console.log(req.body.assignmentId);
+        // console.log(req.body.fileType);
+        // console.log(req.email);
         const filesInBuffer = await Buffer.find({assignmentId: req.body.assignmentId, fileType: req.body.fileType});
-        // console.log(filesInBuffer);
+        const filesInPassed = await Historical.find({
+            datasets: {
+                $elemMatch : {
+                    $in: req.body.datasets
+                }
+            }
+        },{});
+        // console.log(filesInPassed.length);
+        const checker = await User.findOne({email: req.email},{});
+        // console.log(checker.id);
         res.status(200).send({msg:"success"});
-        initiateCheck(filesInBuffer, filesInPassed, req.body.assignmentId, req.body.fileType, req.body.user);
+        initiateCheck(filesInBuffer, filesInPassed, req.body.assignmentId, req.body.fileType, checker.id, req.body.granularity);
     } catch(err) {
         console.log(err);
         res.status(500).send(err);
@@ -24,8 +34,30 @@ const postCheckConfig = async(req, res) => {
 }
 
 
-function initiateCheck(batchFiles, old, assignment, dataType, userId) {
-    let granularity = 10;
+async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, userId, granularity) {
+    // let granularity = 10;
+    fsp.mkdir(`./historical_${assignment}_${dataType}_${userId}`, err => {
+        if (err) {
+            return console.error(err);
+        }
+    }).then( () => {
+        if (dataType === 'pdf') {
+            for (let i = 0; i < historicalFiles.length; i++) {
+                pdfParse(historicalFiles[i].originalFile).then(async (result) => {
+                    let fileName = path.parse(historicalFiles[i].fileName).name;
+                    fs.writeFileSync(`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].submitter}_${fileName}.txt`, result.text);
+                })
+            }
+        } else if (dataType === 'c' || dataType === 'java') {
+            for (let i = 0; i < historicalFiles.length; i++) {
+                let fileName = path.parse(historicalFiles[i].fileName).name;
+                fs.writeFileSync(`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].submitter}_${fileName}.${dataType}`, historicalFiles[i].originalFile);
+            }
+        }
+    })
+
+    await new Promise(resolve => setTimeout(resolve, historicalFiles.length * 1000));
+
     fsp.mkdir(`./batch_${assignment}_${dataType}_${userId}`, err => {
         if (err) {
             return console.error(err);
@@ -38,11 +70,14 @@ function initiateCheck(batchFiles, old, assignment, dataType, userId) {
                     fs.writeFileSync(`./batch_${assignment}_${dataType}_${userId}/${fileName}.txt`, result.text);
                     if (i == batchFiles.length-1) {
                         let batch = `./batch_${assignment}_${dataType}_${userId}`;
+                        let historical = `./historical_${assignment}_${dataType}_${userId}`
                         while (true) {
                             var batchDir = await fsp.readdir(batch);
                             if (batchDir.length == batchFiles.length) {
                                 await new Promise(resolve => setTimeout(resolve, 5000));
-                                exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), assignment, 'text', batchFiles));
+                                console.log(batch);
+                                console.log(historical);
+                                exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, 'text', batchFiles));
                                 // console.log(batchFiles.length);
                                 break;
                             }
@@ -53,10 +88,11 @@ function initiateCheck(batchFiles, old, assignment, dataType, userId) {
         } else if (dataType === 'c' || dataType === 'java') {
             for (let i = 0; i < batchFiles.length; i++) {
                 let fileName = path.parse(batchFiles[i].fileName).name;
-                fs.writeFileSync(`./batch_${assignment}_${dataType}_${userId}/${fileName}.c`, batchFiles[i].binary);
+                fs.writeFileSync(`./batch_${assignment}_${dataType}_${userId}/${fileName}.${dataType}`, batchFiles[i].binary);
                 if (i == batchFiles.length-1) {
                     let batch = `./batch_${assignment}_${dataType}_${userId}`;
-                    exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), assignment, dataType, batchFiles));
+                    let historical = `./historical_${assignment}_${dataType}_${userId}`
+                    exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
                 }
                 
             }
@@ -64,17 +100,18 @@ function initiateCheck(batchFiles, old, assignment, dataType, userId) {
     })
 }
 
-async function storeResult(resultStr, batchName, when, assignment, dataType, files) {
+async function storeResult(resultStr, batchName, historical, when, assignmentId, dataType, files) {
+    console.log('storeResult');
     let data = resultStr.split('\n\n');
-    let result = resultParser(data, dataType, batchName);
+    let result = resultParser(data, dataType, batchName, historical);
     let emailIndex = batchName.lastIndexOf('_')+1;
     let checker = batchName.slice(emailIndex, batchName.length);
-    // console.log(resultStr);
-    // console.log(files);
+    // console.log(resultStr)
     for (let i = 0; i < result.length; i++) {
         let newResult = new Result();
         let realFileName = path.parse(result[i].fileName).name;
         newResult.fileName = realFileName;
+        newResult.assignmentId = assignmentId;
         newResult.checker = checker;
         newResult.similarity = result[i].similarity;
         newResult.duplicates = result[i].duplicates;
@@ -84,6 +121,7 @@ async function storeResult(resultStr, batchName, when, assignment, dataType, fil
             let fileName = path.parse(file.fileName).name;
             if (fileName === realFileName) {
                 newResult.originalFile = file.binary;
+                newResult.submitter = file.user;
             }
         });
         await newResult.save();
@@ -92,9 +130,10 @@ async function storeResult(resultStr, batchName, when, assignment, dataType, fil
     //     await Buffer.deleteOne({_id : files[i].id});
     // }
     fs.rmSync(batchName, { recursive: true, force: true });
+    fs.rmSync(historical, { recursive: true, force: true });
 }
 
-function resultParser(result, dataType, batchName){
+function resultParser(result, dataType, batchName, historical){
     let fileStat = fileStatParser(result, dataType);
     // console.log("fileStat.length:" + fileStat.length);
     let simStatMap = similarChunkParser(result);
@@ -104,7 +143,7 @@ function resultParser(result, dataType, batchName){
         if (simStatMap.has(fileStat[i].fileName)) {
             var text = fs.readFileSync(`${batchName}/${fileStat[i].fileName}`, "utf-8");
             var simRate = getSimilarityRate(simStatMap.get(fileStat[i].fileName).duplicates, text);
-            console.log(simRate);
+            // console.log(simRate);
             oneResult = {
                 fileName : fileStat[i].fileName,
                 similarity: simRate,
@@ -180,6 +219,7 @@ function similarChunkParser(result){
 function singleChunkParser(chunk) {
     let data = chunk.split('\n');
     let fileName = [];
+    // console.log(data);
 
     let fileNameStart = data[0].lastIndexOf('/')+1;
     let fileNameEnd = data[0].indexOf(':');
@@ -192,19 +232,11 @@ function singleChunkParser(chunk) {
     let batchStart1 = 0;
     let batchEnd1 = data[0].lastIndexOf('/');
     batchName.push(data[0].slice(batchStart1, batchEnd1));
-    // const batch1 = data[0].slice(batchStart1, batchEnd1);
     let batchStart2 = 0;
     let batchEnd2 = data[1].lastIndexOf('/');
     batchName.push(data[1].slice(batchStart2, batchEnd2));
-    // const batch2 = data[1].slice(batchStart2, batchEnd2);
 
     const numOfResult = (batchName[0] === batchName[1])?2:1;
-    // if (numOfResult == 1) {
-    //     console.log(fileName[0]);
-    //     console.log(batch1);
-    //     console.log(batch2);
-    // }
-    // console.log(batch1);
 
     let content = data.slice(2, data.length);
     const seperatorIndex = content.indexOf('---');
@@ -217,7 +249,11 @@ function singleChunkParser(chunk) {
         for (let i = 0; i < dup[c].length; i++) {
             dupStr = dupStr + dup[c][i].slice(2, dup[c][i].length);
         }
-        duplicate.push([dupStr, batchName[(c+1)%2]+fileName[(c+1)%2]]);
+        if (numOfResult == 1) {
+            duplicate.push([dupStr, batchName[(c+1)%2]+'/'+fileName[(c+1)%2]]);
+        } else {
+            duplicate.push([dupStr, batchName[(c+1)%2]+fileName[(c+1)%2]]);
+        }
     }
 
     let result = [];
