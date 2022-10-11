@@ -41,7 +41,7 @@ function initiateCheck(batchFiles, old, assignment, dataType, userId) {
                         while (true) {
                             var batchDir = await fsp.readdir(batch);
                             if (batchDir.length == batchFiles.length) {
-                                await new Promise(resolve => setTimeout(resolve, 60000));
+                                await new Promise(resolve => setTimeout(resolve, 5000));
                                 exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), assignment, 'text', batchFiles));
                                 // console.log(batchFiles.length);
                                 break;
@@ -104,6 +104,7 @@ function resultParser(result, dataType, batchName){
         if (simStatMap.has(fileStat[i].fileName)) {
             var text = fs.readFileSync(`${batchName}/${fileStat[i].fileName}`, "utf-8");
             var simRate = getSimilarityRate(simStatMap.get(fileStat[i].fileName).duplicates, text);
+            console.log(simRate);
             oneResult = {
                 fileName : fileStat[i].fileName,
                 similarity: simRate,
@@ -152,16 +153,19 @@ function similarChunkParser(result){
     // console.log(chunks.length);
     for (let i = 0; i < chunks.length-1; i++){
         let chunkResult = singleChunkParser(chunks[i]);
+        // console.log(chunkResult);
         for (let j = 0; j < chunkResult.length; j++){
             if (resultMap.has(chunkResult[j].fileName)) {
                 let currentResult = resultMap.get(chunkResult[j].fileName);
                 let oldDup = currentResult.duplicates;
-                let newDup = oldDup.concat(chunkResult[j].duplicate);
+                let newDup = oldDup.concat([chunkResult[j].duplicate]);
+                // console.log(newDup);
                 resultMap.set(chunkResult[j].fileName, {
                     fileName : chunkResult[j].fileName,
                     duplicates: newDup
                 })
             } else {
+                // console.log(chunkResult[j].duplicate)
                 resultMap.set(chunkResult[j].fileName, {
                     fileName : chunkResult[j].fileName,
                     duplicates: [chunkResult[j].duplicate]
@@ -169,6 +173,7 @@ function similarChunkParser(result){
             }
         }
     }
+    // console.log(resultMap);
     return resultMap;
 }
 
@@ -183,14 +188,17 @@ function singleChunkParser(chunk) {
     let file2End = data[1].indexOf(':');
     fileName.push(data[1].slice(file2Start,file2End));
 
+    let batchName = [];
     let batchStart1 = 0;
     let batchEnd1 = data[0].lastIndexOf('/');
-    const batch1 = data[0].slice(batchStart1, batchEnd1);
+    batchName.push(data[0].slice(batchStart1, batchEnd1));
+    // const batch1 = data[0].slice(batchStart1, batchEnd1);
     let batchStart2 = 0;
     let batchEnd2 = data[1].lastIndexOf('/');
-    const batch2 = data[1].slice(batchStart2, batchEnd2);
+    batchName.push(data[1].slice(batchStart2, batchEnd2));
+    // const batch2 = data[1].slice(batchStart2, batchEnd2);
 
-    const numOfResult = (batch1 === batch2)?2:1;
+    const numOfResult = (batchName[0] === batchName[1])?2:1;
     // if (numOfResult == 1) {
     //     console.log(fileName[0]);
     //     console.log(batch1);
@@ -209,23 +217,24 @@ function singleChunkParser(chunk) {
         for (let i = 0; i < dup[c].length; i++) {
             dupStr = dupStr + dup[c][i].slice(2, dup[c][i].length);
         }
-        duplicate.push(dupStr);
+        duplicate.push([dupStr, batchName[(c+1)%2]+fileName[(c+1)%2]]);
     }
 
     let result = [];
     for (let i = 0; i < numOfResult; i++) {
         result.push({
             fileName: fileName[i],
-            duplicate: duplicate[i],
-            similarTo: fileName[(i+1)%2]
+            duplicate: duplicate[i]
         })
     }
+    // console.log(result);
     return result;
 }
 
 function getSimilarityRate(dup, text) {
     text = text.split('\n');
     text = text.join('');
+    // console.log(dup)
 
     let highlightTable = [];
     for (let i = 0; i < text.length; i++){
@@ -234,9 +243,9 @@ function getSimilarityRate(dup, text) {
 
     for (let i = 0; i < dup.length; i++) {
         // console.log(text.includes(dup[i]));
-        if (text.includes(dup[i])) {
-            let start = text.indexOf(dup[i]);
-            for (let j = 0; j < dup[i].length; j++) {
+        if (text.includes(dup[i][0])) {
+            let start = text.indexOf(dup[i][0]);
+            for (let j = 0; j < dup[i][0].length; j++) {
                 highlightTable[start+j] = 1;
             }
         }
