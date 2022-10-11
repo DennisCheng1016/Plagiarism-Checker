@@ -3,10 +3,14 @@ const User = require("../models/user");
 const httpMocks = require("node-mocks-http");
 const userController = require('../controllers/userController');
 const connectDB = require("../Config/connectMongo");
+const mongoose = require("mongoose");
 
 describe('checkAuth', () => {
     beforeAll(async () => {
         await connectDB();
+    });
+    afterAll(async () => {
+        await mongoose.disconnect();
     });
     // the verify token middleware will ensure all input are valid
     it('getUserInfo (Success)', async () => {
