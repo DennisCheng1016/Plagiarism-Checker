@@ -65,8 +65,6 @@ describe('checkAuth', () => {
         // get data that sent to res
         data = JSON.parse(res._getData());
 
-
-
         // decode the token to get email, expect no errors
         jwt.verify(data.Authorization, process.env.TOKEN_SIGNATURE);
     });

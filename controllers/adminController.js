@@ -22,7 +22,6 @@ async function getAllPermission(req, res) {
 // a function to update user account, e.g. username, account status!
 async function updateUser(req, res) {
     const {userEmail, update} = req.body;
-    console.log({userEmail});
 
     // get the user by email
     let users = await User.findOneAndUpdate({email: userEmail}, update, {new: true});
