@@ -66,7 +66,6 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/auth', authRouter);
 app.use(verifyToken);
 app.use('/user', userRouter);
-app.use('/file', fileRouter);
 app.use('/check', checkerRouter);
 app.use('/result', resultRouter);
 app.use('/subject', subjectRouter);

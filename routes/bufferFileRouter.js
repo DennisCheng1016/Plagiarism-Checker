@@ -1,7 +1,14 @@
 const bufferFileRouter = require('express').Router();
-const bufferController = require('../controllers/bufferFileContorller');
+const {
+	uploadFiles,
+	getBufferFiles,
+	deleteBufferFile,
+} = require('../controllers/bufferFileController');
 
-bufferFileRouter.get("/getBufferFileList", bufferController.getBufferFiles);
-bufferFileRouter.post("/deleteFile", bufferController.deleteBufferFile);
+bufferFileRouter
+	.route('/:id')
+	.get(getBufferFiles)
+	.post(uploadFiles)
+	.delete(deleteBufferFile);
 
 module.exports = bufferFileRouter;
