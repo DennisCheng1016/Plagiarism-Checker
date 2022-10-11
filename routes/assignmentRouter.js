@@ -4,6 +4,7 @@ const {
 	createAssignment,
 	updateAssignment,
 	deleteAssignment,
+	setDatasets,
 } = require('../controllers/assignmentController');
 
 assignmentRouter
@@ -12,5 +13,6 @@ assignmentRouter
 	.post(createAssignment)
 	.patch(updateAssignment)
 	.delete(deleteAssignment);
+assignmentRouter.route('/setDataset/:id').patch(setDatasets);
 
 module.exports = assignmentRouter;
