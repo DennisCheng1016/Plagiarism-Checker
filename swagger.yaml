@@ -315,6 +315,38 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /assignment/dataset/{id}:
+    patch:
+      tags:
+      - Assignment
+      summary: Set datasets
+      operationId: Setdatasets
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SetdatasetsRequest'
+              - example:
+                  setDatasets: ['datasetId']
+            example:
+              setDatasets: ['datasetId']
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
   /dataset/{id}:
     get:
       tags:
@@ -413,6 +445,74 @@ paths:
             type: string
           required: true
           description: The dataset ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /buffer/{id}:
+    get:
+      tags:
+      - Buffer
+      summary: Get buffer list
+      operationId: Getbufferlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Buffer
+      summary: Upload file
+      operationId: Uploadfile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Buffer
+      summary: Delete file
+      operationId: Deletefile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The file ID
       responses:
         '200':
           description: ''
@@ -561,7 +661,8 @@ components:
     UpdatedatasetRequest:
       title: Update Dataset Request
       required:
-      - assignmentName
+      - datasetName
+      - fileType
       type: object
       properties:
         datasetName:
@@ -570,7 +671,17 @@ components:
           type: string
       example:
         datasetName: UpdateTestDatasetName
-        fileType: image
+        fileType: java
+    SetdatasetsRequest:
+      title: Set Datasets Request
+      type: object
+      properties:
+        setDatasets:
+          type: array
+          items: 
+            type: string
+      example:
+        setDatasets: ['datasetId']
   securitySchemes:
     bearer:
       type: http
@@ -586,4 +697,6 @@ tags:
 - name: Assignment
   description: ''  
 - name: Dataset
+  description: ''  
+- name: Buffer
   description: ''  

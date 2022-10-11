@@ -76,9 +76,27 @@ const deleteAssignment = async (req, res) => {
 	return res.status(StatusCodes.OK).send();
 };
 
+const setDatasets = async (req, res) => {
+	if (req.user.role !== 'teacher' && req.user.role !== 'admin')
+		throw new UnauthenticatedError(
+			'Only teacher/admin can create assignment'
+		);
+	const { setDatasets } = req.body;
+	const { id: assignmentId } = req.params;
+	const assignment = await Assignment.findOneAndUpdate(
+		{ _id: assignmentId },
+		{ setDatasets },
+		{ new: true, runValidators: true }
+	);
+	if (!assignment)
+		throw new NotFoundError(`No assignment with id ${assignmentId}`);
+	return res.status(StatusCodes.OK).json({ assignment });
+};
+
 module.exports = {
 	getAssignmentList,
 	createAssignment,
 	updateAssignment,
 	deleteAssignment,
+	setDatasets,
 };
