@@ -6,7 +6,8 @@ const {
 	NotFoundError,
 } = require('../errors');
 const { StatusCodes } = require('http-status-codes');
-const { create } = require('../models/subject');
+const Assignment = require('../models/assignment');
+const Dataset = require('../models/dataset');
 
 const getSubjectListAdmin = async (req, res) => {
 	if (req.user.role !== 'admin')
@@ -103,24 +104,32 @@ const updateSubject = async (req, res) => {
 };
 
 const deleteSubject = async (req, res) => {
-	try {
-		const userEmail = req.email;
-		const subjectCode = req.body.subjectCode;
-		const subject = await Subject.findOne({ subjectCode: subjectCode });
-		if (!subject) return res.status(409).json({ msg: 'Subject not found' });
-		if (!(await User.findOne({ email: userEmail, subjects: subject._id })))
-			return res
-				.status(409)
-				.json({ msg: 'Subject does not exist in the subjectList' });
-		const result = await User.updateOne(
-			{ email: userEmail },
-			{ $pull: { subjects: subject._id } }
-		);
-		// const result2 = await Subject.deleteOne({subjectCode: subjectCode})
-		return res.status(200).json({ msg: 'Delete subject successfully' });
-	} catch (error) {
-		res.status(500).json({ msg: error.message });
+	if (req.user.role !== 'admin')
+		throw new UnauthenticatedError('Only admin can create subject');
+	const subject = await Subject.findOneAndDelete({
+		_id: req.params.id,
+	});
+	if (!subject)
+		throw new NotFoundError(`No subject with id ${req.params.id}`);
+	for (const assignmentId of subject.assignments) {
+		let assignment = await Assignment.findOneAndDelete({
+			_id: assignmentId,
+		});
+		if (!assignment)
+			throw new NotFoundError(`No assignment with id ${assignmentId}`);
+		for (const datasetId of assignment.datasets) {
+			let dataset = await Dataset.findOneAndDelete({
+				_id: datasetId,
+			});
+			if (!dataset)
+				throw new NotFoundError(`No dataset with id ${datasetId}`);
+		}
 	}
+	const users = await User.updateMany(
+		{ subjects: subject._id },
+		{ $pull: { subjects: subject._id } }
+	);
+	return res.status(StatusCodes.OK).send();
 };
 
 const addStudent = async (req, res) => {

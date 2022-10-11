@@ -183,6 +183,25 @@ paths:
       deprecated: false
       security:
       - bearer: []
+    delete:
+      tags:
+      - Subject
+      summary: Delete subject
+      operationId: Deletesubject
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
   /assignment/{id}:
     get:
       tags:
