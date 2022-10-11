@@ -65,7 +65,6 @@ function initiateCheck(batchFiles, old, assignment, dataType, userId) {
 }
 
 async function storeResult(resultStr, batchName, when, assignment, dataType, files) {
-    console.log(files);
     let data = resultStr.split('\n\n');
     let result = resultParser(data, dataType, batchName);
     let emailIndex = batchName.lastIndexOf('_')+1;
