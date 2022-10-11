@@ -252,7 +252,7 @@ function singleChunkParser(chunk) {
         if (numOfResult == 1) {
             duplicate.push([dupStr, batchName[(c+1)%2]+'/'+fileName[(c+1)%2]]);
         } else {
-            duplicate.push([dupStr, batchName[(c+1)%2]+fileName[(c+1)%2]]);
+            duplicate.push([dupStr, batchName[(c+1)%2]+'/'+fileName[(c+1)%2]]);
         }
     }
 
