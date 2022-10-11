@@ -315,6 +315,38 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /assignment/setDatasets/{id}:
+    patch:
+      tags:
+      - Assignment
+      summary: Set datasets
+      operationId: Setdatasets
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SetdatasetsRequest'
+              - example:
+                  setDatasets: ['datasetId']
+            example:
+              setDatasets: ['datasetId']
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
   /dataset/{id}:
     get:
       tags:
@@ -629,7 +661,8 @@ components:
     UpdatedatasetRequest:
       title: Update Dataset Request
       required:
-      - assignmentName
+      - datasetName
+      - fileType
       type: object
       properties:
         datasetName:
@@ -638,7 +671,17 @@ components:
           type: string
       example:
         datasetName: UpdateTestDatasetName
-        fileType: image
+        fileType: java
+    SetdatasetsRequest:
+      title: Set Datasets Request
+      type: object
+      properties:
+        setDatasets:
+          type: array
+          items: 
+            type: string
+      example:
+        setDatasets: ['datasetId']
   securitySchemes:
     bearer:
       type: http
