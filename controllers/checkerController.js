@@ -10,12 +10,13 @@ const { sep } = require("path");
 const postCheckConfig = async(req, res) => {
     try{
         let filesInPassed;
-        console.log(req.body.subjectCode);
         console.log(req.body.assignmentId);
-        const filesInBuffer = await Buffer.find({subjectCode: req.body.subjectCode, assignmentId: req.body.assignmentId, dataType: req.body.dataType});
+        console.log(req.body.fileType);
+        console.log(req.body.user);
+        const filesInBuffer = await Buffer.find({assignmentId: req.body.assignmentId, fileType: req.body.fileType});
         // console.log(filesInBuffer);
         res.status(200).send({msg:"success"});
-        initiateCheck(filesInBuffer, filesInPassed, req.body.subjectCode, req.body.assignmentId, req.body.dataType, req.email);
+        initiateCheck(filesInBuffer, filesInPassed, req.body.assignmentId, req.body.fileType, req.body.user);
     } catch(err) {
         console.log(err);
         res.status(500).send(err);
@@ -23,26 +24,25 @@ const postCheckConfig = async(req, res) => {
 }
 
 
-function initiateCheck(batchFiles, old, subjectCode, assignment, dataType, userEmail) {
+function initiateCheck(batchFiles, old, assignment, dataType, userId) {
     let granularity = 10;
-    fsp.mkdir(`./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}`, err => {
+    fsp.mkdir(`./batch_${assignment}_${dataType}_${userId}`, err => {
         if (err) {
             return console.error(err);
         }
     }).then( () => {
         if (dataType === 'pdf') {
-            let numOfDownloaded = 0;
             for (let i = 0; i < batchFiles.length; i++) {
                 pdfParse(batchFiles[i].binary).then(async (result) => {
                     let fileName = path.parse(batchFiles[i].fileName).name;
-                    fs.writeFileSync(`./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}/${fileName}.txt`, result.text);
+                    fs.writeFileSync(`./batch_${assignment}_${dataType}_${userId}/${fileName}.txt`, result.text);
                     if (i == batchFiles.length-1) {
-                        let batch = `./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}`;
+                        let batch = `./batch_${assignment}_${dataType}_${userId}`;
                         while (true) {
                             var batchDir = await fsp.readdir(batch);
                             if (batchDir.length == batchFiles.length) {
                                 await new Promise(resolve => setTimeout(resolve, 60000));
-                                exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), subjectCode, assignment, 'text', batchFiles));
+                                exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), assignment, 'text', batchFiles));
                                 // console.log(batchFiles.length);
                                 break;
                             }
@@ -53,10 +53,10 @@ function initiateCheck(batchFiles, old, subjectCode, assignment, dataType, userE
         } else if (dataType === 'c' || dataType === 'java') {
             for (let i = 0; i < batchFiles.length; i++) {
                 let fileName = path.parse(batchFiles[i].fileName).name;
-                fs.writeFileSync(`./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}/${fileName}.c`, batchFiles[i].binary);
+                fs.writeFileSync(`./batch_${assignment}_${dataType}_${userId}/${fileName}.c`, batchFiles[i].binary);
                 if (i == batchFiles.length-1) {
-                    let batch = `./batch_${subjectCode}_${assignment}_${dataType}_${userEmail}`;
-                    exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), subjectCode, assignment, dataType, batchFiles));
+                    let batch = `./batch_${assignment}_${dataType}_${userId}`;
+                    exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, Date.now(), assignment, dataType, batchFiles));
                 }
                 
             }
@@ -64,12 +64,14 @@ function initiateCheck(batchFiles, old, subjectCode, assignment, dataType, userE
     })
 }
 
-async function storeResult(resultStr, batchName, when, subjectCode, assignment, dataType, files) {
+async function storeResult(resultStr, batchName, when, assignment, dataType, files) {
+    console.log(files);
     let data = resultStr.split('\n\n');
     let result = resultParser(data, dataType, batchName);
     let emailIndex = batchName.lastIndexOf('_')+1;
     let checker = batchName.slice(emailIndex, batchName.length);
     // console.log(resultStr);
+    // console.log(files);
     for (let i = 0; i < result.length; i++) {
         let newResult = new Result();
         let realFileName = path.parse(result[i].fileName).name;
