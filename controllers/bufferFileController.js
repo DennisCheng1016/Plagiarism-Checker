@@ -29,6 +29,12 @@ const uploadFiles = async (req, res) => {
 	} else {
 		if (!files.name.endsWith(fileType))
 			throw new BadRequestError('Upload file type is incorrect');
+		if (req.user.role === 'student') {
+			await fileBuffer.deleteOne({
+				assignmentId: assignmentId,
+				user: req.user._id,
+			});
+		}
 		const saveFile = await fileBuffer.create({
 			assignmentId: assignmentId,
 			user: req.user._id,
