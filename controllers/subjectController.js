@@ -33,7 +33,7 @@ const getSubjectList = async (req, res) => {
 		},
 		options: { sort: { subjectCode: 1 } },
 	});
-	return res.status(200).json(user.subjects);
+	return res.status(StatusCodes.OK).json(user.subjects);
 };
 
 const createSubject = async (req, res) => {
