@@ -183,6 +183,343 @@ paths:
       deprecated: false
       security:
       - bearer: []
+    delete:
+      tags:
+      - Subject
+      summary: Delete subject
+      operationId: Deletesubject
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /assignment/{id}:
+    get:
+      tags:
+      - Assignment
+      summary: Get assignment list
+      operationId: Getassignmentlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Assignment
+      summary: Create assignment
+      operationId: Createassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The subject ID
+      requestBody:
+        description: 'assignmentName is required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateassignmentRequest'
+              - example:
+                  assignmentName: 'testAssignmentName'
+                  dueDate: '2022-12-12'
+                  threshold: 10
+                  maxCheckTimes: 3
+            example:
+              assignmentName: 'testAssignmentName'
+              dueDate: '2022-12-12'
+              threshold: 10
+              maxCheckTimes: 3
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Assignment
+      summary: Update assignment
+      operationId: Updateassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: 'assignmentName is required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateassignmentRequest'
+              - example:
+                  assignmentName: 'updateTestAssignmentName'
+                  dueDate: '2022-12-13'
+                  threshold: 3
+                  maxCheckTimes: 10
+            example:
+              assignmentName: 'updateTestAssignmentName'
+              dueDate: '2022-12-12'
+              threshold: 3
+              maxCheckTimes: 10
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Assignment
+      summary: Delete assignment
+      operationId: Deleteassignment
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /assignment/dataset/{id}:
+    patch:
+      tags:
+      - Assignment
+      summary: Set datasets
+      operationId: Setdatasets
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SetdatasetsRequest'
+              - example:
+                  setDatasets: ['datasetId']
+            example:
+              setDatasets: ['datasetId']
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /dataset/{id}:
+    get:
+      tags:
+      - Dataset
+      summary: Get dataset list
+      operationId: Getdatasetlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Dataset
+      summary: Create dataset
+      operationId: Createdataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        description: 'datasetName and fileType are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreatedatasetRequest'
+              - example:
+                  datasetName: 'testDatasetName'
+                  fileType: 'pdf'
+            example:
+              datasetName: 'testDatasetName'
+              fileType: 'pdf'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Dataset
+      summary: Update assignment
+      operationId: Updatedataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The dataset ID
+      requestBody:
+        description: 'datasetName and fileType are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdatedatasetRequest'
+              - example:
+                  datasetName: 'updateTestDatasetName'
+                  fileType: 'pdf'
+            example:
+              datasetName: 'updatetTestDatasetName'
+              fileType: 'pdf'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Dataset
+      summary: Delete dataset
+      operationId: Deletedataset
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The dataset ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /buffer/{id}:
+    get:
+      tags:
+      - Buffer
+      summary: Get buffer list
+      operationId: Getbufferlist
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Buffer
+      summary: Upload file
+      operationId: Uploadfile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Buffer
+      summary: Delete file
+      operationId: Deletefile
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The file ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
 components:
   schemas:
     RegisterRequest:
@@ -269,154 +606,82 @@ components:
         subjectCode: updateTestSubjectCode
         subjectName: updateTestSubjectName
         teachers: ['teacher2@gmail']
-    CreatecategoryRequest:
-      title: CreatecategoryRequest
+    CreateassignmentRequest:
+      title: Create Assignment Request
       required:
-      - name
+      - assignmentName
       type: object
       properties:
-        name:
+        assignmentName:
           type: string
+        dueDate:
+          type: string
+        threshold: 
+          type: number
+        maxCheckTimes:
+          type: number
       example:
-        name: breakfast
-    UpdatecategorynameRequest:
-      title: UpdatecategorynameRequest
+        assignmentName: testAssignmentName
+        dueDate: XXXX-YY-ZZ
+        threshold: 10
+        maxCheckTimes: 3
+    UpdateassignmentRequest:
+      title: Update Assignment Request
       required:
-      - name
+      - assignmentName
       type: object
       properties:
-        name:
+        assignmentName:
           type: string
+        dueDate:
+          type: string
+        threshold: 
+          type: number
+        maxCheckTimes:
+          type: number
       example:
-        name: brunch
-    CreaterecipeRequest:
-      title: CreaterecipeRequest
+        assignmentName: UpdateTestAssignmentName
+        dueDate: XXXX-YY-ZZ
+        threshold: 3
+        maxCheckTimes: 10
+    CreatedatasetRequest:
+      title: Create Dataset Request
       required:
-      - title
-      - ingredients
-      - method
-      - category
-      - tags
+      - datasetName
+      - fileType
       type: object
       properties:
-        title:
+        datasetName:
           type: string
-        ingredients:
-          type: array
-          items:
-            type: string
-          description: ''
-        method:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
+        fileType:
           type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
       example:
-        title: rice ee
-        ingredients:
-        - egg
-        - rice
-        method:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - yyy
-        - zzzz
-    UpdaterecipeRequest:
-      title: UpdaterecipeRequest
+        datasetName: testDatasetName
+        fileType: pdf
+    UpdatedatasetRequest:
+      title: Update Dataset Request
       required:
-      - title
-      - ingredients
-      - methods
-      - category
-      - tags
+      - datasetName
+      - fileType
       type: object
       properties:
-        title:
+        datasetName:
           type: string
-        ingredients:
-          type: array
-          items:
-            type: string
-          description: ''
-        methods:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
+        fileType:
           type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
       example:
-        title: egg rice
-        ingredients:
-        - egg
-        - rice
-        methods:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - '33333333'
-        - sdafa
-    FavoriterecipeRequest:
-      title: FavoriterecipeRequest
-      required:
-      - title
-      - ingredients
-      - methods
-      - category
-      - tags
+        datasetName: UpdateTestDatasetName
+        fileType: java
+    SetdatasetsRequest:
+      title: Set Datasets Request
       type: object
       properties:
-        title:
-          type: string
-        ingredients:
+        setDatasets:
           type: array
-          items:
+          items: 
             type: string
-          description: ''
-        methods:
-          type: array
-          items:
-            type: string
-          description: ''
-        category:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-          description: ''
       example:
-        title: update
-        ingredients:
-        - egg
-        - rice
-        methods:
-        - '1'
-        - '2'
-        - '3'
-        category: 63302ddf7b1ea4c130f10c21
-        tags:
-        - xxx
-        - '33333333'
+        setDatasets: ['datasetId']
   securitySchemes:
     bearer:
       type: http
@@ -428,3 +693,10 @@ tags:
 - name: Auth
   description: ''
 - name: Subject
+  description: ''
+- name: Assignment
+  description: ''  
+- name: Dataset
+  description: ''  
+- name: Buffer
+  description: ''  

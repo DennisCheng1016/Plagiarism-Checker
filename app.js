@@ -23,11 +23,11 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 // Routers
 const authRouter = require('./routes/authRouter');
-const fileRouter = require('./routes/fileRouter');
 const checkerRouter = require('./routes/checkerRouter');
 const resultRouter = require('./routes/resultRouter');
 const subjectRouter = require('./routes/subjectRouter');
 const assignmentRouter = require('./routes/assignmentRouter');
+const datasetRouter = require('./routes/datasetRouter');
 const bufferFileRouter = require('./routes/bufferFileRouter');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
@@ -50,7 +50,7 @@ app.set('trust proxy', 1);
 app.use(
 	rateLimiter({
 		windowMs: 15 * 60 * 1000, // 15 minutes
-		max: 100, // limit each IP to 100 requests per windowMs
+		max: 1000, // limit each IP to 100 requests per windowMs
 	})
 );
 
@@ -65,11 +65,11 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/auth', authRouter);
 app.use(verifyToken);
 app.use('/user', userRouter);
-app.use('/file', fileRouter);
 app.use('/check', checkerRouter);
 app.use('/result', resultRouter);
 app.use('/subject', subjectRouter);
 app.use('/assignment', assignmentRouter);
+app.use('/dataset', datasetRouter);
 app.use('/buffer', bufferFileRouter);
 // app.use(verifyAdmin);
 app.use('/admin', verifyAdmin, adminRouter);

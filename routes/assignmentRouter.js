@@ -3,9 +3,16 @@ const {
 	getAssignmentList,
 	createAssignment,
 	updateAssignment,
+	deleteAssignment,
+	setDatasets,
 } = require('../controllers/assignmentController');
 
-assignmentRouter.route('/').post(createAssignment);
-assignmentRouter.route('/:id').get(getAssignmentList).patch(updateAssignment);
+assignmentRouter
+	.route('/:id')
+	.get(getAssignmentList)
+	.post(createAssignment)
+	.patch(updateAssignment)
+	.delete(deleteAssignment);
+assignmentRouter.route('/dataset/:id').patch(setDatasets);
 
 module.exports = assignmentRouter;

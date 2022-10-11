@@ -7,7 +7,7 @@ async function getAllUser(req, res) {
     let users = await User.find({});
 
     // sent message to front-end
-    res.status(200).json(users);
+    res.status(201).json(users);
 }
 
 // a function gets all permissions for teacher to register
@@ -16,19 +16,18 @@ async function getAllPermission(req, res) {
     let permission = await Permission.find({});
 
     // sent message to front-end
-    res.status(200).json(permission);
+    res.status(201).json(permission);
 }
 
 // a function to update user account, e.g. username, account status!
 async function updateUser(req, res) {
     const {userEmail, update} = req.body;
-    console.log({userEmail});
 
     // get the user by email
     let users = await User.findOneAndUpdate({email: userEmail}, update, {new: true});
 
     // sent message to front-end
-    res.status(200).json(users);
+    res.status(201).json(users);
 }
 
 // a function to permit teachers to register
@@ -47,7 +46,7 @@ async function permitTeacherRegistration(req, res) {
     });
 
     // sent message to front-end
-    res.status(200).json({msg: "permitted registration"});
+    res.status(201).json({msg: "permitted registration"});
 }
 
 module.exports = {getAllUser, getAllPermission, updateUser, permitTeacherRegistration}

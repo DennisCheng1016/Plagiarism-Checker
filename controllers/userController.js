@@ -8,7 +8,7 @@ async function getUserInfo(req, res) {
     let user = req.user;
 
     // sent message to front-end
-    res.status(200).json({
+    res.status(201).json({
         username: user.username,
         email: user.email,
         role: user.role,
@@ -19,6 +19,7 @@ async function getUserInfo(req, res) {
 
 // User login.
 async function resetPassword(req, res) {
+
     const email = req.email;
     const password = req.body.password;
 
@@ -37,7 +38,7 @@ async function resetPassword(req, res) {
     user.password= await bcrypt.hashSync(password, 10);
     user.save();
 
-    res.status(200).json({
+    res.status(201).json({
         msg: "Success"
     });
 }
