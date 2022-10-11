@@ -63,7 +63,7 @@ const deleteAssignment = async (req, res) => {
 		_id: req.params.id,
 	});
 	if (!assignment)
-		throw new NotFoundError(`No assignment with id ${assignmentId}`);
+		throw new NotFoundError(`No assignment with id ${req.params.id}`);
 	for (const datasetId of assignment.datasets) {
 		let dataset = await Dataset.findOneAndDelete({ _id: datasetId });
 		if (!dataset)
