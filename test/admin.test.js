@@ -4,11 +4,15 @@ const httpMocks = require("node-mocks-http");
 const adminController = require('../controllers/adminController');
 const connectDB = require("../Config/connectMongo");
 const Permission = require('../models/permission');
+const mongoose = require("mongoose");
 
 describe('checkAuth', () => {
     beforeAll(async () => {
         await connectDB();
         await Permission.findOneAndDelete({email: "teacher123@gmail.com"});
+    });
+    afterAll(async () => {
+        await mongoose.disconnect();
     });
     // the verify token middleware will ensure all input are valid
     it('getAllUser (Success)', async () => {
