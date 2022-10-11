@@ -92,7 +92,7 @@ const uploadFiles = async (req, res) => {
     if (!req.files) return res.status.json({ msg: "No upload files" });
     const files = req.files.file;
     const subjectCode = req.body.subjectCode;
-    const assignmentName = req.body.assignmentName;
+    const assignmentId = req.body.assignmentId;
     const dataType = req.body.dataType;
     const user = await User.findOne({ email: req.email });
     const username = user.username;
@@ -102,7 +102,7 @@ const uploadFiles = async (req, res) => {
         const saveFile = new fileBuffer({
           userName: username,
           subjectCode: subjectCode,
-          assignmentName: assignmentName,
+          assignmentId: assignmentId,
           dataType: dataType,
           fileName: file.name,
           binary: file.data,
@@ -115,7 +115,7 @@ const uploadFiles = async (req, res) => {
       const saveFile = new fileBuffer({
         userName: username,
         subjectCode: subjectCode,
-        assignmentName: assignmentName,
+        assignmentId: assignmentId,
         dataType: dataType,
         fileName: files.name,
         binary: files.data,

@@ -18,9 +18,9 @@ const resultSchema = new mongoose.Schema({
         default : 0
     },
     duplicates: {
-        type: [[Number]],
+        type: [String],
         required: false,
-        default : [[]]
+        default : []
     },
     when: {
         type: Date,
@@ -35,7 +35,9 @@ const resultSchema = new mongoose.Schema({
         type: Buffer,
         required: true
     }
-})
+},
+    { timestamps: true }
+)
 
 
 const Result = mongoose.model("Result", resultSchema)

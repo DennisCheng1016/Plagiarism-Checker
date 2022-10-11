@@ -13,8 +13,8 @@ const bufferSchema = new mongoose.Schema({
         type: String, 
         required: true, 
     }, 
-    assignmentName:{
-        type: String, 
+    assignmentId:{
+        type: String,
         required: true, 
     }, 
     dataType:{
