@@ -11,7 +11,7 @@ describe('checkAuth', () => {
         await Permission.findOneAndDelete({email: "teacher123@gmail.com"});
     });
     // the verify token middleware will ensure all input are valid
-    it('status 201 when admin\'s valid token', async () => {
+    it('getAllUser (Success)', async () => {
         const req = {};
         // verify token will let req.user become user object
         req.user = await User.findById('6342e0f5748992f75b4351a2');
@@ -19,7 +19,7 @@ describe('checkAuth', () => {
         await adminController.getAllUser(req,res);
         expect(res.statusCode).toBe(201);
     });
-    it('status 201 getting all permissions', async () => {
+    it('getAllPermission (Success)', async () => {
         const req = {};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');
@@ -27,7 +27,7 @@ describe('checkAuth', () => {
         await adminController.getAllPermission(req, res);
         expect(res.statusCode).toBe(201);
     });
-    it('status 201 updating user', async () => {
+    it('updateUser (Success)', async () => {
         const req = {body: {userEmail: "student1@gmail.com",update: {username: "student1",accountStatus:"active"}}};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');
@@ -39,7 +39,7 @@ describe('checkAuth', () => {
         expect(data.username).toBe( "student1");
         expect(data.accountStatus).toBe("active");
     });
-    it('status 201 allow teacher register', async () => {
+    it('permitTeacherRegistration (Success)', async () => {
         const req = {body: {email: "teacher123@gmail.com"}};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');
