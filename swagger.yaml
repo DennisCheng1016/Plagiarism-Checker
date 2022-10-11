@@ -315,7 +315,7 @@ paths:
       deprecated: false
       security:
       - bearer: []
-  /assignment/setDatasets/{id}:
+  /assignment/dataset/{id}:
     patch:
       tags:
       - Assignment
