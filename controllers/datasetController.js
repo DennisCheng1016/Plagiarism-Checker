@@ -19,7 +19,7 @@ const createDataset = async (req, res) => {
 	if (req.user.role !== 'teacher' && req.user.role !== 'admin')
 		throw new UnauthenticatedError('Only teacher/admin can create dataset');
 	if (!(await Assignment.findById({ _id: req.params.id })))
-		throw new NotFoundError(`No dataset with id ${req.params.id}`);
+		throw new NotFoundError(`No assignment with id ${req.params.id}`);
 	req.body.assignmentId = req.params.id;
 	const dataset = await Dataset.create(req.body);
 	const assignment = await Assignment.findOneAndUpdate(

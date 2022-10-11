@@ -9,7 +9,7 @@ describe('checkAuth', () => {
         await connectDB();
     });
     // the verify token middleware will ensure all input are valid
-    it('status 201 when get with valid token', async () => {
+    it('getUserInfo (Success)', async () => {
         const req = {};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');
@@ -19,7 +19,7 @@ describe('checkAuth', () => {
         let data = JSON.parse(res._getData());
         expect(data.email).toBe("student1@gmail.com");
     });
-    it('status 201 resetting password', async () => {
+    it('resetPassword (Success)', async () => {
         const req = {email: "student1@gmail.com", body: {password: "123123"}};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');

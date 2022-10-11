@@ -17,7 +17,7 @@ const getSubjectListAdmin = async (req, res) => {
 		.sort('subjectCode')
 		.populate({
 			path: 'teachers',
-			select: 'username',
+			select: 'username email',
 		});
 
 	return res.status(StatusCodes.OK).json(subjects);
@@ -29,7 +29,7 @@ const getSubjectList = async (req, res) => {
 		select: 'subjectCode subjectName teachers',
 		populate: {
 			path: 'teachers',
-			select: 'username',
+			select: 'username email',
 		},
 		options: { sort: { subjectCode: 1 } },
 	});
@@ -106,7 +106,7 @@ const updateSubject = async (req, res) => {
 		await subject.save();
 	}
 	const finalSubject = await Subject.findById(subjectId);
-	return res.status(StatusCodes.CREATED).json({ finalSubject });
+	return res.status(StatusCodes.OK).json({ finalSubject });
 };
 
 const deleteSubject = async (req, res) => {
