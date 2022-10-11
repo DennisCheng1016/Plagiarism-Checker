@@ -106,7 +106,7 @@ const updateSubject = async (req, res) => {
 		await subject.save();
 	}
 	const finalSubject = await Subject.findById(subjectId);
-	return res.status(StatusCodes.CREATED).json({ finalSubject });
+	return res.status(StatusCodes.OK).json({ finalSubject });
 };
 
 const deleteSubject = async (req, res) => {

@@ -25,6 +25,12 @@ const assignmentSchema = new mongoose.Schema(
 			trim: true,
 			default: 3,
 		},
+		setDatasets: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Dataset',
+			},
+		],
 		datasets: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
