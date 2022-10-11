@@ -18,7 +18,7 @@ const resultSchema = new mongoose.Schema({
         default : 0
     },
     duplicates: {
-        type: [String],
+        type: [[String]],
         required: false,
         default : []
     },
