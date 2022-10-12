@@ -68,7 +68,11 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
                                 await new Promise(resolve => setTimeout(resolve, 5000));
                                 console.log(batch);
                                 console.log(historical);
-                                exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, 'text', batchFiles));
+                                if (historicalFiles.length == 0) {
+                                    exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, 'text', batchFiles));
+                                } else {
+                                    exec(`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, 'text', batchFiles));
+                                }
                                 // console.log(batchFiles.length);
                                 break;
                             }
@@ -83,7 +87,11 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
                 if (i == batchFiles.length-1) {
                     let batch = `./batch_${assignment}_${dataType}_${userId}`;
                     let historical = `./historical_${assignment}_${dataType}_${userId}`
-                    exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
+                    if (historicalFiles.length == 0) {
+                        exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
+                    } else {
+                        exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
+                    }
                 }
                 
             }
