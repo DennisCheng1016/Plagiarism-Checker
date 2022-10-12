@@ -92,6 +92,7 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
                     if (historicalFiles.length == 0) {
                         exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
                     } else {
+                        exec('mkdir child_process')
                         exec(`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`, (error, stdout, stderr) => storeResult(stdout, batch, historical, Date.now(), assignment, dataType, batchFiles));
                     }
                 }
