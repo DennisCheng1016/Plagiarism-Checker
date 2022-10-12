@@ -4,6 +4,7 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const Buffer = require('../models/bufferFile');
 const Result = require('../models/result');
+const Assignment = require('../models/assignment');
 const Historical = require('../models/historical');
 const User = require('../models/user');
 const path = require('path');
@@ -12,10 +13,11 @@ const { StatusCodes } = require('http-status-codes');
 
 const postCheckConfig = async(req, res) => {
     const filesInBuffer = await Buffer.find({assignmentId: req.body.assignmentId, fileType: req.body.fileType});
+    const assignment = await Assignment.findOne({id: req.body.assignmentId},{});
     const filesInPassed = await Historical.find({
         datasets: {
             $elemMatch : {
-                $in: req.body.datasets
+                $in: assignment.setDatasets
             }
         }
     },{});
