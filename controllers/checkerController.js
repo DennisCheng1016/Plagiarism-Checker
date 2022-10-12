@@ -102,7 +102,7 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
 async function storeResult(resultStr, batchName, historical, when, assignmentId, dataType, files) {
     console.log('storeResult');
     let data = resultStr.split('\n\n');
-    let result = resultParser(data, dataType, batchName, historical);
+    let result = resultParser(data, dataType, batchName);
     let emailIndex = batchName.lastIndexOf('_')+1;
     let checker = batchName.slice(emailIndex, batchName.length);
     // console.log(resultStr)
@@ -132,7 +132,7 @@ async function storeResult(resultStr, batchName, historical, when, assignmentId,
     fs.rmSync(historical, { recursive: true, force: true });
 }
 
-function resultParser(result, dataType, batchName, historical){
+function resultParser(result, dataType, batchName){
     let fileStat = fileStatParser(result, dataType);
     // console.log("fileStat.length:" + fileStat.length);
     let simStatMap = similarChunkParser(result);
