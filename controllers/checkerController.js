@@ -102,12 +102,12 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
 }
 
 async function storeResult(resultStr, batchName, historical, when, assignmentId, dataType, files) {
-    console.log('storeResult');
+    // console.log('storeResult');
     let data = resultStr.split('\n\n');
     let result = resultParser(data, dataType, batchName);
     let emailIndex = batchName.lastIndexOf('_')+1;
     let checker = batchName.slice(emailIndex, batchName.length);
-    // console.log(resultStr)
+    console.log(resultStr)
     for (let i = 0; i < result.length; i++) {
         let newResult = new Result();
         let realFileName = path.parse(result[i].fileName).name;
