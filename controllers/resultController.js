@@ -8,7 +8,7 @@ const { StatusCodes } = require('http-status-codes');
 const getResultList = async(req, res) => {
     console.log(req.params.id);
     const checker = await User.findOne({email:req.email},{});
-    const resultList = await Result.find({checker: checker.id, assignmentId: req.params.id}, {fileName:true, similarity:true, when:true}).lean();
+    const resultList = await Result.find({checker: checker.id, assignmentId: req.params.id}, {fileName:true, assignmentId:true, similarity:true, submitter:true, when:true}).lean();
     res.status(StatusCodes.OK).send(JSON.stringify(resultList));
 }
 
