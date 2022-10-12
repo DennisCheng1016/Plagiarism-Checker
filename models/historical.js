@@ -2,7 +2,7 @@
 const mongoose = require("mongoose")
 
 /* -------------------------------------- MODEL -------------------------------------- */
-const resultSchema = new mongoose.Schema({
+const historicalSchema = new mongoose.Schema({
 
     fileName: {
         type: String,
@@ -22,6 +22,18 @@ const resultSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'Please provide user Id']
+    },
+    grade : {
+        type: String,
+        enum: ['passed', 'failed'],
+        required: true,
+    },
+    datasets : {
+        type: [
+            mongoose.Schema.Types.ObjectId
+        ],
+        ref: 'Dataset',
+        default: []
     },
     similarity: {
         type: Number,
@@ -51,6 +63,6 @@ const resultSchema = new mongoose.Schema({
 )
 
 
-const Result = mongoose.model("Result", resultSchema)
+const Historical = mongoose.model("Historical", historicalSchema)
 
-module.exports = Result
+module.exports = Historical

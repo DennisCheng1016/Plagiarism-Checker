@@ -4,13 +4,13 @@ info:
   contact: {}
   version: '1.0'
 servers:
-- url: https://sc-plagiarism-checker.herokuapp.com
-  variables: {}
+  - url: https://sc-plagiarism-checker.herokuapp.com
+    variables: {}
 paths:
   /auth/register:
     post:
       tags:
-      - Auth
+        - Auth
       summary: Register
       operationId: Register
       parameters: []
@@ -20,17 +20,17 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/RegisterRequest'
-              - example:
-                  username: test
-                  password: '123123'
-                  email: test@gmail.com
-                  role: 'student'
+                - $ref: '#/components/schemas/RegisterRequest'
+                - example:
+                    username: test
+                    password: '123123'
+                    email: test@gmail.com
+                    role: 'student'
             example:
-                username: test
-                password: '123123'
-                email: test@gmail.com
-                role: 'student'
+              username: test
+              password: '123123'
+              email: test@gmail.com
+              role: 'student'
         required: true
       responses:
         '200':
@@ -41,7 +41,7 @@ paths:
   /auth/login:
     post:
       tags:
-      - Auth
+        - Auth
       summary: Login
       operationId: Login
       parameters: []
@@ -51,10 +51,10 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/LoginRequest'
-              - example:
-                  email: test@gmail.com
-                  password: '123456'
+                - $ref: '#/components/schemas/LoginRequest'
+                - example:
+                    email: test@gmail.com
+                    password: '123456'
             example:
               email: test@gmail.com
               password: '123456'
@@ -65,10 +65,75 @@ paths:
           headers: {}
       deprecated: false
       security: []
+  /auth/recoverEmail:
+    post:
+      tags:
+        - Auth
+      summary: send recover email
+      operationId: recover
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/recoverEmail'
+                - example:
+                    email: test@gmail.com
+            example:
+              email: test@gmail.com
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /user/resetPassword:
+    post:
+      tags:
+        - Account
+      summary: user reset password
+      operationId: resetPassword
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/resetPassword'
+                - example:
+                    password: '123123'
+            example:
+              password: '123123'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /user/getUser/:
+    get:
+      tags:
+        - Account
+      summary: Get user info by token
+      operationId: GetUserInfoByToken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
   /subject/:
     get:
       tags:
-      - Subject
+        - Subject
       summary: Get subject list
       operationId: Getsubjectlist
       parameters: []
@@ -78,10 +143,10 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     post:
       tags:
-      - Subject
+        - Subject
       summary: Student add subject
       operationId: Addsubject
       parameters: []
@@ -91,9 +156,9 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/AddsubjectRequest'
-              - example:
-                  subjectCode: 'testsubjectCode'
+                - $ref: '#/components/schemas/AddsubjectRequest'
+                - example:
+                    subjectCode: 'testsubjectCode'
             example:
               subjectCode: 'testsubjectCode'
         required: true
@@ -103,11 +168,11 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /subject/admin/:
     get:
       tags:
-      - Subject
+        - Subject
       summary: Get all subjects list
       operationId: Getallsubjectlist
       parameters: []
@@ -117,10 +182,10 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     post:
       tags:
-      - Subject
+        - Subject
       summary: Create subject
       operationId: Createsubject
       parameters: []
@@ -130,11 +195,11 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/CreatesubjectRequest'
-              - example:
-                  subjectCode: 'testsubjectCode'
-                  subjectName: 'testSubjectName'
-                  teachers: ['teacher1@gmail.com']
+                - $ref: '#/components/schemas/CreatesubjectRequest'
+                - example:
+                    subjectCode: 'testsubjectCode'
+                    subjectName: 'testSubjectName'
+                    teachers: ['teacher1@gmail.com']
             example:
               subjectCode: 'testsubjectCode'
               subjectName: 'testSubjectName'
@@ -146,14 +211,14 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /subject/admin/{id}:
     patch:
       tags:
-      - Subject
+        - Subject
       summary: Update subject
       operationId: Updatesubject
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -166,11 +231,11 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/UpdatesubjectRequest'
-              - example:
-                  subjectCode: 'updateTestsubjectCode'
-                  subjectName: 'updateTestSubjectName'
-                  teachers: ['teacher2@gmail.com']
+                - $ref: '#/components/schemas/UpdatesubjectRequest'
+                - example:
+                    subjectCode: 'updateTestsubjectCode'
+                    subjectName: 'updateTestSubjectName'
+                    teachers: ['teacher2@gmail.com']
             example:
               subjectCode: 'updateTestsubjectCode'
               subjectName: 'updateTestSubjectName'
@@ -182,13 +247,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     delete:
       tags:
-      - Subject
+        - Subject
       summary: Delete subject
       operationId: Deletesubject
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -201,14 +266,14 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /assignment/{id}:
     get:
       tags:
-      - Assignment
+        - Assignment
       summary: Get assignment list
       operationId: Getassignmentlist
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -221,13 +286,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     post:
       tags:
-      - Assignment
+        - Assignment
       summary: Create assignment
       operationId: Createassignment
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -240,12 +305,12 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/CreateassignmentRequest'
-              - example:
-                  assignmentName: 'testAssignmentName'
-                  dueDate: '2022-12-12'
-                  threshold: 10
-                  maxCheckTimes: 3
+                - $ref: '#/components/schemas/CreateassignmentRequest'
+                - example:
+                    assignmentName: 'testAssignmentName'
+                    dueDate: '2022-12-12'
+                    threshold: 10
+                    maxCheckTimes: 3
             example:
               assignmentName: 'testAssignmentName'
               dueDate: '2022-12-12'
@@ -258,13 +323,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     patch:
       tags:
-      - Assignment
+        - Assignment
       summary: Update assignment
       operationId: Updateassignment
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -277,12 +342,12 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/UpdateassignmentRequest'
-              - example:
-                  assignmentName: 'updateTestAssignmentName'
-                  dueDate: '2022-12-13'
-                  threshold: 3
-                  maxCheckTimes: 10
+                - $ref: '#/components/schemas/UpdateassignmentRequest'
+                - example:
+                    assignmentName: 'updateTestAssignmentName'
+                    dueDate: '2022-12-13'
+                    threshold: 3
+                    maxCheckTimes: 10
             example:
               assignmentName: 'updateTestAssignmentName'
               dueDate: '2022-12-12'
@@ -295,13 +360,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     delete:
       tags:
-      - Assignment
+        - Assignment
       summary: Delete assignment
       operationId: Deleteassignment
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -314,14 +379,14 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /assignment/dataset/{id}:
     patch:
       tags:
-      - Assignment
+        - Assignment
       summary: Set datasets
       operationId: Setdatasets
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -334,9 +399,9 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/SetdatasetsRequest'
-              - example:
-                  setDatasets: ['datasetId']
+                - $ref: '#/components/schemas/SetdatasetsRequest'
+                - example:
+                    setDatasets: ['datasetId']
             example:
               setDatasets: ['datasetId']
         required: true
@@ -346,14 +411,14 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /dataset/{id}:
     get:
       tags:
-      - Dataset
+        - Dataset
       summary: Get dataset list
       operationId: Getdatasetlist
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -366,13 +431,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     post:
       tags:
-      - Dataset
+        - Dataset
       summary: Create dataset
       operationId: Createdataset
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -385,10 +450,10 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/CreatedatasetRequest'
-              - example:
-                  datasetName: 'testDatasetName'
-                  fileType: 'pdf'
+                - $ref: '#/components/schemas/CreatedatasetRequest'
+                - example:
+                    datasetName: 'testDatasetName'
+                    fileType: 'pdf'
             example:
               datasetName: 'testDatasetName'
               fileType: 'pdf'
@@ -399,13 +464,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     patch:
       tags:
-      - Dataset
+        - Dataset
       summary: Update assignment
       operationId: Updatedataset
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -418,10 +483,10 @@ paths:
           application/json:
             schema:
               allOf:
-              - $ref: '#/components/schemas/UpdatedatasetRequest'
-              - example:
-                  datasetName: 'updateTestDatasetName'
-                  fileType: 'pdf'
+                - $ref: '#/components/schemas/UpdatedatasetRequest'
+                - example:
+                    datasetName: 'updateTestDatasetName'
+                    fileType: 'pdf'
             example:
               datasetName: 'updatetTestDatasetName'
               fileType: 'pdf'
@@ -432,13 +497,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     delete:
       tags:
-      - Dataset
+        - Dataset
       summary: Delete dataset
       operationId: Deletedataset
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -451,14 +516,14 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
   /buffer/{id}:
     get:
       tags:
-      - Buffer
+        - Buffer
       summary: Get buffer list
       operationId: Getbufferlist
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -471,13 +536,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     post:
       tags:
-      - Buffer
+        - Buffer
       summary: Upload file
       operationId: Uploadfile
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -500,13 +565,13 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
     delete:
       tags:
-      - Buffer
+        - Buffer
       summary: Delete file
       operationId: Deletefile
-      parameters: 
+      parameters:
         - in: path
           name: id
           schema:
@@ -519,16 +584,104 @@ paths:
           headers: {}
       deprecated: false
       security:
-      - bearer: []
+        - bearer: []
+
+  /admin/getAllUser:
+    get:
+      tags:
+        - Admin
+      summary: Get all user with their infomation
+      operationId: getAllUser
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /admin/getAllPermission:
+    get:
+      tags:
+        - Admin
+      summary: Get all permission (teachers' email whitelist)
+      operationId: getAllPermission
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /admin/updateUserAccount:
+    post:
+      tags:
+        - Admin
+      summary: Update a user's account
+      operationId: updateUserAccount
+      parameters: []
+      requestBody:
+        description: 'update can contain username/accountStatus/subjects, accountStatus could be active/disabled'
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateUserAccount'
+                - example:
+                    userEmail: 'test@gmail.com'
+                    update: {
+                      "username":"ron",
+                      "accountStatus":"disable"
+                    }
+            example:
+              userEmail: 'test@gmail.com'
+              update: {
+                "username":"ron",
+                "accountStatus":"disable",
+              }
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /admin/permitTeacherRegistration:
+    post:
+      tags:
+        - Admin
+      summary: Permit teacher registration
+      operationId: permitTeacherRegistration
+      parameters: []
+      requestBody:
+        description: 'add a teachers email to whitelist'
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/permitTeacherRegistration'
+                - example:
+                    email: 'test@gmail.com'
+            example:
+              email: 'test@gmail.com'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+
 components:
   schemas:
     RegisterRequest:
       title: Register Request
       required:
-      - username
-      - password
-      - email
-      - role
+        - username
+        - password
+        - email
+        - role
       type: object
       properties:
         username:
@@ -547,8 +700,8 @@ components:
     LoginRequest:
       title: Login Request
       required:
-      - email
-      - password
+        - email
+        - password
       type: object
       properties:
         email:
@@ -558,10 +711,30 @@ components:
       example:
         email: test@gmail.com
         password: '123123'
+    recoverEmail:
+      title: Recover email Request
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: test@gmail.com
+    resetPassword:
+      title: Reset password Request
+      required:
+        - password
+      type: object
+      properties:
+        password:
+          type: string
+      example:
+        password:'123123'
     AddsubjectRequest:
       title: Student Add Subject Request
       required:
-      - subjectCode
+        - subjectCode
       type: object
       properties:
         subjectCode:
@@ -571,8 +744,8 @@ components:
     CreatesubjectRequest:
       title: Create Subject Request
       required:
-      - subjectCode
-      - subjectName
+        - subjectCode
+        - subjectName
       type: object
       properties:
         subjectCode:
@@ -590,8 +763,8 @@ components:
     UpdatesubjectRequest:
       title: Update Subject Request
       required:
-      - subjectCode
-      - subjectName
+        - subjectCode
+        - subjectName
       type: object
       properties:
         subjectCode:
@@ -609,14 +782,14 @@ components:
     CreateassignmentRequest:
       title: Create Assignment Request
       required:
-      - assignmentName
+        - assignmentName
       type: object
       properties:
         assignmentName:
           type: string
         dueDate:
           type: string
-        threshold: 
+        threshold:
           type: number
         maxCheckTimes:
           type: number
@@ -628,14 +801,14 @@ components:
     UpdateassignmentRequest:
       title: Update Assignment Request
       required:
-      - assignmentName
+        - assignmentName
       type: object
       properties:
         assignmentName:
           type: string
         dueDate:
           type: string
-        threshold: 
+        threshold:
           type: number
         maxCheckTimes:
           type: number
@@ -647,8 +820,8 @@ components:
     CreatedatasetRequest:
       title: Create Dataset Request
       required:
-      - datasetName
-      - fileType
+        - datasetName
+        - fileType
       type: object
       properties:
         datasetName:
@@ -661,8 +834,8 @@ components:
     UpdatedatasetRequest:
       title: Update Dataset Request
       required:
-      - datasetName
-      - fileType
+        - datasetName
+        - fileType
       type: object
       properties:
         datasetName:
@@ -678,25 +851,57 @@ components:
       properties:
         setDatasets:
           type: array
-          items: 
+          items:
             type: string
       example:
         setDatasets: ['datasetId']
+    updateUserAccount:
+      title: Update User Account
+      required:
+        - userEmail
+        - update
+      type: object
+      properties:
+        userEmail:
+          type: string
+        update:
+          type: object
+      example:
+        userEmail: dennis@gmail.com,
+        update: {
+          accountStatus: disable
+        }
+    permitTeacherRegistration:
+      title: Permit Teacher Registration
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: aTeacher@gmail.com
+
   securitySchemes:
     bearer:
       type: http
       scheme: bearer
-security: []
+
+
 tags:
-- name: Misc
-  description: ''
-- name: Auth
-  description: ''
-- name: Subject
-  description: ''
-- name: Assignment
-  description: ''  
-- name: Dataset
-  description: ''  
-- name: Buffer
-  description: ''  
+  - name: Misc
+    description: ''
+  - name: Auth
+    description: ''
+  - name: Account
+    description: ''
+  - name: Subject
+    description: ''
+  - name: Assignment
+    description: ''
+  - name: Dataset
+    description: ''
+  - name: Buffer
+    description: ''
+  - name: Admin
+    description: ''
