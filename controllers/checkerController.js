@@ -102,7 +102,9 @@ async function initiateCheck(batchFiles, historicalFiles, assignment, dataType, 
 }
 
 async function storeResult(resultStr, batchName, historical, when, assignmentId, dataType, files) {
-    // console.log('storeResult');
+    console.log('storeResult');
+    var dir = await fsp.readdir('./');
+    console.log(dir);
     let data = resultStr.split('\n\n');
     let result = resultParser(data, dataType, batchName);
     let emailIndex = batchName.lastIndexOf('_')+1;
