@@ -8,29 +8,20 @@ const Historical = require('../models/historical');
 const User = require('../models/user');
 const path = require('path');
 const { sep } = require("path");
+const { StatusCodes } = require('http-status-codes');
 
 const postCheckConfig = async(req, res) => {
-    try{
-        // console.log(req.body.assignmentId);
-        // console.log(req.body.fileType);
-        // console.log(req.email);
-        const filesInBuffer = await Buffer.find({assignmentId: req.body.assignmentId, fileType: req.body.fileType});
-        const filesInPassed = await Historical.find({
-            datasets: {
-                $elemMatch : {
-                    $in: req.body.datasets
-                }
+    const filesInBuffer = await Buffer.find({assignmentId: req.body.assignmentId, fileType: req.body.fileType});
+    const filesInPassed = await Historical.find({
+        datasets: {
+            $elemMatch : {
+                $in: req.body.datasets
             }
-        },{});
-        // console.log(filesInPassed.length);
-        const checker = await User.findOne({email: req.email},{});
-        // console.log(checker.id);
-        res.status(200).send({msg:"success"});
-        initiateCheck(filesInBuffer, filesInPassed, req.body.assignmentId, req.body.fileType, checker.id, req.body.granularity);
-    } catch(err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
+        }
+    },{});
+    const checker = await User.findOne({email: req.email},{});
+    res.status(StatusCodes.OK).send();
+    initiateCheck(filesInBuffer, filesInPassed, req.body.assignmentId, req.body.fileType, checker.id, req.body.granularity);
 }
 
 
@@ -126,9 +117,9 @@ async function storeResult(resultStr, batchName, historical, when, assignmentId,
         });
         await newResult.save();
     }
-    // for (let i = 0; i < files.length; i++) {
-    //     await Buffer.deleteOne({_id : files[i].id});
-    // }
+    for (let i = 0; i < files.length; i++) {
+        await Buffer.deleteOne({_id : files[i].id});
+    }
     fs.rmSync(batchName, { recursive: true, force: true });
     fs.rmSync(historical, { recursive: true, force: true });
 }

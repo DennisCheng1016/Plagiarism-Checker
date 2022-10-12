@@ -3,10 +3,10 @@ const express = require('express');
 const resultRouter = express.Router();
 const resultController = require('../controllers/resultController');
 
-resultRouter.get("/getResultList", resultController.getResultList);
-resultRouter.get("/getResultDetail", resultController.getResultDetail);
-resultRouter.post("/postResultsToDatasets", resultController.storeResultsToDateset);
-resultRouter.post("/postResultToFailed", resultController.tagAsFailed);
+resultRouter.get("/list/:id", resultController.getResultList);
+resultRouter.get("/:id", resultController.getResultDetail);
+
+resultRouter.post("/dataset", resultController.saveResultsToHistorical);
 
 
 module.exports = resultRouter;
