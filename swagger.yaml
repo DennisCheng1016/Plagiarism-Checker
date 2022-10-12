@@ -630,23 +630,18 @@ paths:
                 - $ref: '#/components/schemas/updateUserAccount'
                 - example:
                     userEmail: 'test@gmail.com'
-                    update: {
-                      "username":"ron",
-                      "accountStatus":"disable"
-                    }
+                    update: { username: 'ron', accountStatus: 'disable'}
             example:
               userEmail: 'test@gmail.com'
-              update: {
-                "username":"ron",
-                "accountStatus":"disable",
-              }
+              update: { username: 'ron',accountStatus: 'disable'}
         required: true
       responses:
         '200':
           description: ''
           headers: {}
       deprecated: false
-      security: []
+      security:
+        - bearer: []
   /admin/permitTeacherRegistration:
     post:
       tags:
@@ -671,8 +666,8 @@ paths:
           description: ''
           headers: {}
       deprecated: false
-      security: []
-
+      security:
+        - bearer: []
 components:
   schemas:
     RegisterRequest:
@@ -866,11 +861,14 @@ components:
           type: string
         update:
           type: object
+          properties:
+            accountStatus:
+              type: string
+            username:
+              type: string
       example:
-        userEmail: dennis@gmail.com,
-        update: {
-          accountStatus: disable
-        }
+        userEmail: dennis@gmail.com
+        update: { accountStatus: disable }
     permitTeacherRegistration:
       title: Permit Teacher Registration
       required:
