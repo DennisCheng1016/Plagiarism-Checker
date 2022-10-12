@@ -72,7 +72,7 @@ const getBufferFiles = async (req, res) => {
 	let files;
 	if (req.user.role === 'student') {
 		files = await fileBuffer
-			.findOne({ assignmentId: assignmentId, user: req.user._id })
+			.find({ assignmentId: assignmentId, user: req.user._id })
 			.select('-binary -__v')
 			.populate({
 				path: 'assignmentId',
