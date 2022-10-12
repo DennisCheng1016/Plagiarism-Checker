@@ -585,7 +585,108 @@ paths:
       deprecated: false
       security:
         - bearer: []
-
+  /result/list/{id}:
+    get:
+      tags:
+        - Result
+      summary: Get a result list of an assignment
+      operationId: getResultList
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /result/{id}:
+    get:
+      tags:
+        - Result
+      summary: Get a detail info of a result
+      operationId: getResultDetail
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The result ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /result/dataset:
+    post:
+      tags:
+        - Result
+      summary: Save results to datasets
+      operationId: saveResultsToHistorical
+      parameters: []
+      requestBody:
+        description: 'results, datasets and grade are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Saveresultstohistorical'
+                - example:
+                    results: ['6346601f1ecfcdf26b46825d', '6346601f1ecfcdf26b46825f']
+                    datasetId: '6345cda0beb454ed03853cc9'
+                    grade: 'passed'
+            example:
+              results: ['6346601f1ecfcdf26b46825d', '6346601f1ecfcdf26b46825f']
+              datasetId: '6345cda0beb454ed03853cc9'
+              grade: 'passed'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /check:
+    post:
+      tags:
+        - Checker
+      summary: Post check configuration and initiate checking
+      operationId: postCheckConfig
+      parameters: []
+      requestBody:
+        description: 'assignmentId, fileType, granularity and datasets are required'
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Postcheckconfig'
+                - example:
+                    assignmentId: 63459bfb91cf355a962cea18
+                    fileType: c
+                    granularity: 10
+                    datasets: ['6345cda0beb454ed03853cc9']
+            example:
+              assignmentId: 63459bfb91cf355a962cea18
+              fileType: c
+              granularity: 10
+              datasets: ['6345cda0beb454ed03853cc9']
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
   /admin/getAllUser:
     get:
       tags:
@@ -850,6 +951,46 @@ components:
             type: string
       example:
         setDatasets: ['datasetId']
+    Saveresultstohistorical:
+      title: Save Results to Historicals
+      required:
+        - results
+        - datasetId
+        - grade
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: string
+        datasetId:
+          type: string
+        grade:
+          type: string
+    Postcheckconfig:
+      title: Post Check configuration and intiate checking
+      required:
+        - assignmentId
+        - fileType
+        - granularity
+        - datasets
+      type: object
+      properties:
+        assignmentId:
+          type: string
+        fileType:
+          type: string
+        granularity:
+          type: string
+        datasets:
+          type: array
+          items:
+            type: string
+      example:
+        assignmentId: 63459bfb91cf355a962cea18
+        fileType: c
+        granularity: 10
+        datasets: ['6345cda0beb454ed03853cc9']
     updateUserAccount:
       title: Update User Account
       required:
@@ -900,6 +1041,10 @@ tags:
   - name: Dataset
     description: ''
   - name: Buffer
+    description: ''
+  - name: Checker
+    description: ''
+  - name: Result
     description: ''
   - name: Admin
     description: ''

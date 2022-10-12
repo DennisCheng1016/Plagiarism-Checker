@@ -1,8 +1,10 @@
 const Assignment = require('../models/assignment');
 const Subject = require('../models/subject');
 const Dataset = require('../models/dataset');
+const fileBuffer = require('../models/bufferFile');
 const { UnauthenticatedError, NotFoundError } = require('../errors');
 const { StatusCodes } = require('http-status-codes');
+const Historical = require('../models/historical');
 
 const getAssignmentList = async (req, res) => {
 	const subject = await Subject.findOne({ _id: req.params.id }).populate({
@@ -69,6 +71,8 @@ const deleteAssignment = async (req, res) => {
 		if (!dataset)
 			throw new NotFoundError(`No dataset with id ${datasetId}`);
 	}
+	await fileBuffer.deleteMany({ assignmentId: assignment._id });
+	await Historical.deleteMany({ assignmentId: assignment._id });
 	await Subject.updateOne(
 		{ _id: assignment.subjectId },
 		{ $pull: { assignments: assignment._id } }

@@ -2,6 +2,8 @@ const { StatusCodes } = require('http-status-codes');
 const { UnauthenticatedError, NotFoundError } = require('../errors');
 const Assignment = require('../models/assignment');
 const Dataset = require('../models/dataset');
+const fileBuffer = require('../models/bufferFile');
+const Historical = require('../models/historical');
 
 const getDatasetList = async (req, res) => {
 	const assignment = await Assignment.findOne({
@@ -52,6 +54,7 @@ const deleteDataset = async (req, res) => {
 	const dataset = await Dataset.findOneAndDelete({ _id: req.params.id });
 	if (!dataset)
 		throw new NotFoundError(`No dataset with id ${req.params.id}`);
+	await Historical.deleteMany({ datasetId: dataset._id });
 	await Assignment.updateOne(
 		{ _id: dataset.assignmentId },
 		{ $pull: { datasets: dataset._id } }

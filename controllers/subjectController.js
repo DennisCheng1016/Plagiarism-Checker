@@ -8,6 +8,8 @@ const {
 const { StatusCodes } = require('http-status-codes');
 const Assignment = require('../models/assignment');
 const Dataset = require('../models/dataset');
+const Historical = require('../models/historical');
+const fileBuffer = require('../models/bufferFile');
 
 const getSubjectListAdmin = async (req, res) => {
 	if (req.user.role !== 'admin')
@@ -129,7 +131,9 @@ const deleteSubject = async (req, res) => {
 			});
 			if (!dataset)
 				throw new NotFoundError(`No dataset with id ${datasetId}`);
+			await Historical.deleteMany({ datasetId: dataset._id });
 		}
+		await fileBuffer.deleteMany({ assignmentId: assignment._id });
 	}
 	const users = await User.updateMany(
 		{ subjects: subject._id },
