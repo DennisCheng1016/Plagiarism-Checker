@@ -3,23 +3,34 @@ const User = require("../models/user");
 const httpMocks = require("node-mocks-http");
 const userController = require('../controllers/userController');
 const connectDB = require("../Config/connectMongo");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 describe('checkAuth', () => {
     beforeAll(async () => {
         await connectDB();
+        // hash the password
+        const HashedPassword = await bcrypt.hashSync("Psw12345", 10);
+        await User.create({
+            username: "testStudent2", email: "testStudent2@test.com", password: HashedPassword, role:"student"
+        });
+    });
+    afterAll(async () => {
+        await User.findOneAndDelete({email: "testStudent2@test.com"});
+        await mongoose.disconnect();
     });
     // the verify token middleware will ensure all input are valid
-    it('status 201 when get with valid token', async () => {
+    it('getUserInfo (Success)', async () => {
         const req = {};
         // verify token will let req.user become user object
-        req.user = await User.findById('63439de4b703b94a4429086c');
+        req.user = await User.findOne({email: "testStudent2@test.com"});
         const res = httpMocks.createResponse();
         await userController.getUserInfo(req, res);
         expect(res.statusCode).toBe(201);
         let data = JSON.parse(res._getData());
-        expect(data.email).toBe("student1@gmail.com");
+        expect(data.email).toBe("testStudent2@test.com");
     });
-    it('status 201 resetting password', async () => {
+    it('resetPassword (Success)', async () => {
         const req = {email: "student1@gmail.com", body: {password: "123123"}};
         // verify token will let req.user become user object
         req.user = await User.findById('63439de4b703b94a4429086c');

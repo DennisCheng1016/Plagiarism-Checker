@@ -4,6 +4,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user')
 const httpMocks = require('node-mocks-http');
+const mongoose = require("mongoose");
 
 describe('checkAuth', () => {
     beforeAll(async () => {
@@ -15,10 +16,11 @@ describe('checkAuth', () => {
 
     // use await to make sure it's cleaned up after execution
     afterAll(async () => {
-        await User.deleteOne({ email: 'validemail@test.com' })
+        await User.deleteOne({ email: 'validemail@test.com' });
+        await mongoose.disconnect();
     });
 
-    test('status 201 and send token when valid register', async () => {
+    test('Register (Success)', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
@@ -37,7 +39,7 @@ describe('checkAuth', () => {
         expect(data.msg).toBe("registration successful");
     });
 
-    it('should throw error when account has been registered', async function () {
+    it('Register (Failure)', async function () {
         var req = httpMocks.createRequest({
             body: { username: "validName", email: "validemail@test.com", password: "Pwd123456", role: "student" }
         });
@@ -49,7 +51,7 @@ describe('checkAuth', () => {
         }
     });
 
-    test('should return status 201 when login with correct info', async () => {
+    test('Login (Success)', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
@@ -69,7 +71,7 @@ describe('checkAuth', () => {
         jwt.verify(data.Authorization, process.env.TOKEN_SIGNATURE);
     });
 
-    test('status 409 when login with incorrect info', async () => {
+    test('Login (Failure)', async () => {
 
         // set up mock req and res
         var req = httpMocks.createRequest({
