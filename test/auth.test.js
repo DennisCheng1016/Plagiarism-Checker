@@ -4,6 +4,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user')
 const httpMocks = require('node-mocks-http');
+const mongoose = require("mongoose");
 
 describe('checkAuth', () => {
     beforeAll(async () => {
@@ -15,7 +16,8 @@ describe('checkAuth', () => {
 
     // use await to make sure it's cleaned up after execution
     afterAll(async () => {
-        await User.deleteOne({ email: 'validemail@test.com' })
+        await User.deleteOne({ email: 'validemail@test.com' });
+        await mongoose.disconnect();
     });
 
     test('Register (Success)', async () => {
