@@ -23,6 +23,10 @@ const historicalSchema = new mongoose.Schema(
 			ref: 'User',
 			required: [true, 'Please provide user Id'],
 		},
+		fileType: {
+			type: String,
+			required: [true, 'Please provide file type'],
+		},
 		grade: {
 			type: String,
 			enum: ['passed', 'failed'],

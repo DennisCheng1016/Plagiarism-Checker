@@ -25,6 +25,7 @@ const postCheckConfig = async (req, res) => {
 			datasets: {
 				$elemMatch: { $in: assignment.setDatasets },
 			},
+            fileType: req.body.fileType
 		},
 		{}
 	);
@@ -48,7 +49,6 @@ async function initiateCheck(
 	userId,
 	granularity
 ) {
-	// let granularity = 10;
 	fsp.mkdir(`./historical_${assignment}_${dataType}_${userId}`, err => {
 		if (err) {
 			return console.error(err);
@@ -56,7 +56,7 @@ async function initiateCheck(
 	}).then(() => {
 		if (dataType === 'pdf') {
 			for (let i = 0; i < historicalFiles.length; i++) {
-				pdfParse(historicalFiles[i].originalFile).then(async result => {
+				pdfParse(historicalFiles[i].originalFile).then(result => {
 					let fileName = path.parse(historicalFiles[i].fileName).name;
 					fs.writeFileSync(
 						`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].submitter}_${fileName}.txt`,
@@ -101,8 +101,6 @@ async function initiateCheck(
 								await new Promise(resolve =>
 									setTimeout(resolve, 5000)
 								);
-								console.log(batch);
-								console.log(historical);
 								if (historicalFiles.length == 0) {
 									exec(
 										`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`,
@@ -113,7 +111,7 @@ async function initiateCheck(
 												historical,
 												Date.now(),
 												assignment,
-												'text',
+												dataType,
 												batchFiles
 											)
 									);
@@ -127,12 +125,11 @@ async function initiateCheck(
 												historical,
 												Date.now(),
 												assignment,
-												'text',
+												dataType,
 												batchFiles
 											)
 									);
 								}
-								// console.log(batchFiles.length);
 								break;
 							}
 						}
@@ -193,20 +190,17 @@ async function storeResult(
 	dataType,
 	files
 ) {
-	console.log('storeResult');
-	var dir = await fsp.readdir('./');
-	console.log(dir);
 	let data = resultStr.split('\n\n');
 	let result = resultParser(data, dataType, batchName);
 	let emailIndex = batchName.lastIndexOf('_') + 1;
 	let checker = batchName.slice(emailIndex, batchName.length);
-	console.log(resultStr);
 	for (let i = 0; i < result.length; i++) {
 		let newResult = new Result();
 		let realFileName = path.parse(result[i].fileName).name;
 		newResult.fileName = realFileName;
 		newResult.assignmentId = assignmentId;
 		newResult.checker = checker;
+        newResult.fileType = dataType;
 		newResult.similarity = result[i].similarity;
 		newResult.duplicates = result[i].duplicates;
 		newResult.when = when;
@@ -232,7 +226,6 @@ async function storeResult(
 
 function resultParser(result, dataType, batchName) {
 	let fileStat = fileStatParser(result, dataType);
-	// console.log("fileStat.length:" + fileStat.length);
 	let simStatMap = similarChunkParser(result);
 	let returnArr = [];
 	for (let i = 0; i < fileStat.length; i++) {
@@ -246,14 +239,12 @@ function resultParser(result, dataType, batchName) {
 				simStatMap.get(fileStat[i].fileName).duplicates,
 				text
 			);
-			// console.log(simRate);
 			oneResult = {
 				fileName: fileStat[i].fileName,
 				similarity: simRate,
 				duplicates: simStatMap.get(fileStat[i].fileName).duplicates,
 			};
 		} else {
-			// console.log(fileStat[i].fileName + "dunno why sim is 0");
 			oneResult = {
 				fileName: fileStat[i].fileName,
 				similarity: 0,
@@ -274,7 +265,7 @@ function fileStatParser(result, dataType) {
 		let fileNameStart = data[i].lastIndexOf('/') + 1;
 		let fileNameEnd = data[i].indexOf(':');
 		let wordNumEnd;
-		if (dataType === 'text') {
+		if (dataType === 'pdf') {
 			wordNumEnd = data[i].indexOf(' words');
 		} else {
 			wordNumEnd = data[i].indexOf(' tokens');
@@ -290,22 +281,18 @@ function fileStatParser(result, dataType) {
 function similarChunkParser(result) {
 	const resultMap = new Map();
 	let chunks = result.slice(1, result.length);
-	// console.log(chunks.length);
 	for (let i = 0; i < chunks.length - 1; i++) {
 		let chunkResult = singleChunkParser(chunks[i]);
-		// console.log(chunkResult);
 		for (let j = 0; j < chunkResult.length; j++) {
 			if (resultMap.has(chunkResult[j].fileName)) {
 				let currentResult = resultMap.get(chunkResult[j].fileName);
 				let oldDup = currentResult.duplicates;
 				let newDup = oldDup.concat([chunkResult[j].duplicate]);
-				// console.log(newDup);
 				resultMap.set(chunkResult[j].fileName, {
 					fileName: chunkResult[j].fileName,
 					duplicates: newDup,
 				});
 			} else {
-				// console.log(chunkResult[j].duplicate)
 				resultMap.set(chunkResult[j].fileName, {
 					fileName: chunkResult[j].fileName,
 					duplicates: [chunkResult[j].duplicate],
@@ -313,14 +300,12 @@ function similarChunkParser(result) {
 			}
 		}
 	}
-	// console.log(resultMap);
 	return resultMap;
 }
 
 function singleChunkParser(chunk) {
 	let data = chunk.split('\n');
 	let fileName = [];
-	// console.log(data);
 
 	let fileNameStart = data[0].lastIndexOf('/') + 1;
 	let fileNameEnd = data[0].indexOf(':');
@@ -373,14 +358,12 @@ function singleChunkParser(chunk) {
 			duplicate: duplicate[i],
 		});
 	}
-	// console.log(result);
 	return result;
 }
 
 function getSimilarityRate(dup, text) {
 	text = text.split('\n');
 	text = text.join('');
-	// console.log(dup)
 
 	let highlightTable = [];
 	for (let i = 0; i < text.length; i++) {
@@ -388,7 +371,6 @@ function getSimilarityRate(dup, text) {
 	}
 
 	for (let i = 0; i < dup.length; i++) {
-		// console.log(text.includes(dup[i]));
 		if (text.includes(dup[i][0])) {
 			let start = text.indexOf(dup[i][0]);
 			for (let j = 0; j < dup[i][0].length; j++) {

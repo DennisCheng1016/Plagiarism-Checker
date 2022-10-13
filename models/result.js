@@ -23,6 +23,10 @@ const resultSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'Please provide user Id']
     },
+    fileType: {
+        type: String,
+        required: [true, 'Please provide file type'],
+    },
     similarity: {
         type: Number,
         required: true,

@@ -5,7 +5,6 @@ const Historical = require('../models/historical');
 const { StatusCodes } = require('http-status-codes');
 
 const getResultList = async (req, res) => {
-	console.log(req.params.id);
 	const checker = await User.findOne({ email: req.email }, {});
 	const resultList = await Result.find(
 		{ checker: checker.id, assignmentId: req.params.id },
@@ -41,6 +40,7 @@ const saveResultsToHistorical = async (req, res) => {
 			assignmentId: result.assignmentId,
 			checker: result.checker,
 			submitter: result.submitter,
+			fileType: result.fileType,
 			grade: req.body.grade,
 			datasetId: req.body.datasetId,
 			similarity: result.similarity,
