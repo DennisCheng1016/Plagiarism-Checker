@@ -685,6 +685,26 @@ paths:
       deprecated: false
       security:
         - bearer: []
+  /check/{id}:
+    get:
+      tags:
+        - Checker
+      summary: Check if the logged in student can still check/submit
+      operationId: canStudentCheck
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
   /admin/getAllUser:
     get:
       tags:
