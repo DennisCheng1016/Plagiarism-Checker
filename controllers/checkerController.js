@@ -17,18 +17,16 @@ const postCheckConfig = async (req, res) => {
 		fileType: req.body.fileType,
 	});
 	const assignment = await Assignment.findOne(
-		{ id: req.body.assignmentId },
+		{ _id: req.body.assignmentId },
 		{}
 	);
 	const filesInPassed = await Historical.find(
 		{
-			datasets: {
-				$elemMatch: { $in: assignment.setDatasets },
-			},
+			datasetId: {$in: assignment.setDatasets },
             fileType: req.body.fileType
 		},
 		{}
-	);
+	); 
 	const checker = await User.findOne({ email: req.email }, {});
 	res.status(StatusCodes.OK).send();
 	initiateCheck(
