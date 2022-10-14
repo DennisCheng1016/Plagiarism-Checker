@@ -7,6 +7,7 @@ const Result = require('../models/result');
 const Assignment = require('../models/assignment');
 const Historical = require('../models/historical');
 const User = require('../models/user');
+const StudAssRecord = require('../models/studAssRecord');
 const path = require('path');
 const { sep } = require('path');
 const { StatusCodes } = require('http-status-codes');
@@ -34,19 +35,34 @@ const postCheckConfig = async (req, res) => {
 		filesInPassed,
 		req.body.assignmentId,
 		req.body.fileType,
-		checker.id,
+		checker,
 		req.body.granularity
 	);
 };
+
+const canStudentCheck = async (req, res) => {
+	const checker = await User.findOne({ email: req.email }, {});
+	if (checker.role === 'teacher' || checker.role === 'admin') {
+		throw new BadRequestError('User not student');
+	}
+	const record = await StudAssRecord.findOne({studentId: checker.id, assignmentId: req.params.id},{});
+	const assignment = await Assignment.findOne({_id: req.params.id},{});
+	res.status(StatusCodes.OK).send(
+		{
+			allowed: record.checkedTime < assignment.maxCheckTimes
+		}
+	)
+}
 
 async function initiateCheck(
 	batchFiles,
 	historicalFiles,
 	assignment,
 	dataType,
-	userId,
+	checker,
 	granularity
 ) {
+	const userId = checker.id;
 	fsp.mkdir(`./historical_${assignment}_${dataType}_${userId}`, err => {
 		if (err) {
 			return console.error(err);
@@ -55,18 +71,16 @@ async function initiateCheck(
 		if (dataType === 'pdf') {
 			for (let i = 0; i < historicalFiles.length; i++) {
 				pdfParse(historicalFiles[i].originalFile).then(result => {
-					let fileName = path.parse(historicalFiles[i].fileName).name;
 					fs.writeFileSync(
-						`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].submitter}_${fileName}.txt`,
+						`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].id}.txt`,
 						result.text
 					);
 				});
 			}
 		} else if (dataType === 'c' || dataType === 'java') {
 			for (let i = 0; i < historicalFiles.length; i++) {
-				let fileName = path.parse(historicalFiles[i].fileName).name;
 				fs.writeFileSync(
-					`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].submitter}_${fileName}.${dataType}`,
+					`./historical_${assignment}_${dataType}_${userId}/${historicalFiles[i].id}.${dataType}`,
 					historicalFiles[i].originalFile
 				);
 			}
@@ -100,33 +114,69 @@ async function initiateCheck(
 									setTimeout(resolve, 5000)
 								);
 								if (historicalFiles.length == 0) {
-									exec(
-										`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`,
-										(error, stdout, stderr) =>
-											storeResult(
-												stdout,
-												batch,
-												historical,
-												Date.now(),
-												assignment,
-												dataType,
-												batchFiles
-											)
-									);
+									if (checker.role === 'student') {
+										exec(
+											`./sim_3_0_2/sim_text -S -R -d -r ${granularity} ${batch} / ./old`,
+											(error, stdout, stderr) =>
+												storeResult(
+													stdout,
+													batch,
+													historical,
+													Date.now(),
+													assignment,
+													dataType,
+													batchFiles,
+													checker
+												)
+										);
+									} else {
+										exec(
+											`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ./old`,
+											(error, stdout, stderr) =>
+												storeResult(
+													stdout,
+													batch,
+													historical,
+													Date.now(),
+													assignment,
+													dataType,
+													batchFiles,
+													checker
+												)
+										);
+									}
 								} else {
-									exec(
-										`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ${historical}`,
-										(error, stdout, stderr) =>
-											storeResult(
-												stdout,
-												batch,
-												historical,
-												Date.now(),
-												assignment,
-												dataType,
-												batchFiles
-											)
-									);
+									if (checker.role === 'student') {
+										exec(
+											`./sim_3_0_2/sim_text -S -R -d -r ${granularity} ${batch} / ${historical}`,
+											(error, stdout, stderr) =>
+												storeResult(
+													stdout,
+													batch,
+													historical,
+													Date.now(),
+													assignment,
+													dataType,
+													batchFiles,
+													checker
+												)
+										);
+									} else {
+										exec(
+											`./sim_3_0_2/sim_text -s -R -d -r ${granularity} ${batch} / ${historical}`,
+											(error, stdout, stderr) =>
+												storeResult(
+													stdout,
+													batch,
+													historical,
+													Date.now(),
+													assignment,
+													dataType,
+													batchFiles,
+													checker
+												)
+										);
+									}
 								}
 								break;
 							}
@@ -145,33 +195,69 @@ async function initiateCheck(
 					let batch = `./batch_${assignment}_${dataType}_${userId}`;
 					let historical = `./historical_${assignment}_${dataType}_${userId}`;
 					if (historicalFiles.length == 0) {
-						exec(
-							`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`,
-							(error, stdout, stderr) =>
-								storeResult(
-									stdout,
-									batch,
-									historical,
-									Date.now(),
-									assignment,
-									dataType,
-									batchFiles
-								)
-						);
+						if (checker.role === 'student') {
+							exec(
+								`./sim_3_0_2/sim_${dataType} -S -R -d -r ${granularity} ${batch} / ./old`,
+								(error, stdout, stderr) =>
+									storeResult(
+										stdout,
+										batch,
+										historical,
+										Date.now(),
+										assignment,
+										dataType,
+										batchFiles,
+										checker
+									)
+							);
+						} else {
+							exec(
+								`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ./old`,
+								(error, stdout, stderr) =>
+									storeResult(
+										stdout,
+										batch,
+										historical,
+										Date.now(),
+										assignment,
+										dataType,
+										batchFiles,
+										checker
+									)
+							);
+						}
 					} else {
-						exec(
-							`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`,
-							(error, stdout, stderr) =>
-								storeResult(
-									stdout,
-									batch,
-									historical,
-									Date.now(),
-									assignment,
-									dataType,
-									batchFiles
-								)
-						);
+						if (checker.role === 'student') {
+							exec(
+								`./sim_3_0_2/sim_${dataType} -S -R -d -r ${granularity} ${batch} / ${historical}`,
+								(error, stdout, stderr) =>
+									storeResult(
+										stdout,
+										batch,
+										historical,
+										Date.now(),
+										assignment,
+										dataType,
+										batchFiles,
+										checker
+									)
+							);
+						} else {
+							exec(
+								`./sim_3_0_2/sim_${dataType} -s -R -d -r ${granularity} ${batch} / ${historical}`,
+								(error, stdout, stderr) =>
+									storeResult(
+										stdout,
+										batch,
+										historical,
+										Date.now(),
+										assignment,
+										dataType,
+										batchFiles,
+										checker
+									)
+							);
+						}
 					}
 				}
 			}
@@ -186,18 +272,17 @@ async function storeResult(
 	when,
 	assignmentId,
 	dataType,
-	files
+	files,
+	checker
 ) {
 	let data = resultStr.split('\n\n');
 	let result = resultParser(data, dataType, batchName);
-	let emailIndex = batchName.lastIndexOf('_') + 1;
-	let checker = batchName.slice(emailIndex, batchName.length);
 	for (let i = 0; i < result.length; i++) {
 		let newResult = new Result();
 		let realFileName = path.parse(result[i].fileName).name;
 		newResult.fileName = realFileName;
 		newResult.assignmentId = assignmentId;
-		newResult.checker = checker;
+		newResult.checker = checker.id;
         newResult.fileType = dataType;
 		newResult.similarity = result[i].similarity;
 		newResult.duplicates = result[i].duplicates;
@@ -215,8 +300,21 @@ async function storeResult(
 		});
 		await newResult.save();
 	}
-	for (let i = 0; i < files.length; i++) {
-		await Buffer.deleteOne({ _id: files[i].id });
+	if (checker.role !== 'student'){
+		for (let i = 0; i < files.length; i++) {
+			await Buffer.deleteOne({ _id: files[i].id });
+		}
+	} else {
+		await StudAssRecord.findOneAndUpdate(
+			{
+				studentId: checker.id,
+				assignmentId: assignmentId
+			},{
+				$inc: {
+					checkedTime: 1
+				}
+			}
+		);
 	}
 	fs.rmSync(batchName, { recursive: true, force: true });
 	fs.rmSync(historical, { recursive: true, force: true });
@@ -339,7 +437,7 @@ function singleChunkParser(chunk) {
 		if (numOfResult == 1) {
 			duplicate.push([
 				dupStr,
-				batchName[(c + 1) % 2] + '/' + fileName[(c + 1) % 2],
+				fileName[(c + 1) % 2].slice(0, fileName[(c+1)%2].indexOf('.')),
 			]);
 		} else {
 			duplicate.push([
@@ -385,4 +483,5 @@ function getSimilarityRate(dup, text) {
 
 module.exports = {
 	postCheckConfig,
+	canStudentCheck
 };

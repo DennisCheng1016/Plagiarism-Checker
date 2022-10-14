@@ -10,6 +10,7 @@ const Assignment = require('../models/assignment');
 const Dataset = require('../models/dataset');
 const Historical = require('../models/historical');
 const fileBuffer = require('../models/bufferFile');
+const StudAssRecord = require('../models/studAssRecord');
 
 const getSubjectListAdmin = async (req, res) => {
 	if (req.user.role !== 'admin')
@@ -160,6 +161,14 @@ const addStudent = async (req, res) => {
 		{ new: true, runValidators: true }
 	);
 	subject.students.push(student);
+	for (let i = 0; i < subject.assignments.length; i++) {
+		await StudAssRecord.create(
+			{
+				assignmentId: subject.assignments[i],
+				studentId: student.id
+			}
+		);
+	}
 	await subject.save();
 	return res.status(StatusCodes.OK).json();
 };
