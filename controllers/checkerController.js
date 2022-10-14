@@ -322,7 +322,7 @@ async function storeResult(
 
 function resultParser(result, dataType, batchName) {
 	let fileStat = fileStatParser(result, dataType);
-	let simStatMap = similarChunkParser(result);
+	let simStatMap = similarChunkParser(result, dataType);
 	let returnArr = [];
 	for (let i = 0; i < fileStat.length; i++) {
 		var oneResult;
@@ -374,11 +374,11 @@ function fileStatParser(result, dataType) {
 	return fileStatResult;
 }
 
-function similarChunkParser(result) {
+function similarChunkParser(result, dataType) {
 	const resultMap = new Map();
 	let chunks = result.slice(1, result.length);
 	for (let i = 0; i < chunks.length - 1; i++) {
-		let chunkResult = singleChunkParser(chunks[i]);
+		let chunkResult = singleChunkParser(chunks[i], dataType);
 		for (let j = 0; j < chunkResult.length; j++) {
 			if (resultMap.has(chunkResult[j].fileName)) {
 				let currentResult = resultMap.get(chunkResult[j].fileName);
@@ -399,7 +399,7 @@ function similarChunkParser(result) {
 	return resultMap;
 }
 
-function singleChunkParser(chunk) {
+function singleChunkParser(chunk, dataType) {
 	let data = chunk.split('\n');
 	let fileName = [];
 
@@ -433,6 +433,10 @@ function singleChunkParser(chunk) {
 		let dupStr = '';
 		for (let i = 0; i < dup[c].length; i++) {
 			dupStr = dupStr + dup[c][i].slice(2, dup[c][i].length);
+			// if (dataType === 'c' || dataType === 'java') {
+			// 	dupStr += '\n';
+			// }
+			dupStr += '\n';
 		}
 		if (numOfResult == 1) {
 			duplicate.push([
@@ -458,8 +462,8 @@ function singleChunkParser(chunk) {
 }
 
 function getSimilarityRate(dup, text) {
-	text = text.split('\n');
-	text = text.join('');
+	// text = text.split('\n');
+	// text = text.join('');
 
 	let highlightTable = [];
 	for (let i = 0; i < text.length; i++) {
