@@ -107,8 +107,7 @@ const getResultDetail = async (req, res) => {
 			source.push(
 				{
 					similarTo: sourceDoc.fileName,
-					author: sourceUser,
-					similarity: result.similarity
+					author: sourceUser
 				}
 			)
 		}
@@ -117,7 +116,8 @@ const getResultDetail = async (req, res) => {
 	res.status(StatusCodes.OK).send(
 		{
 			source: source, 
-			htmlStrings: resultList
+			htmlStrings: resultList,
+			similarity: result.similarity
 		}
 	);
 };
