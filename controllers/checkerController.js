@@ -29,15 +29,19 @@ const postCheckConfig = async (req, res) => {
 		{}
 	); 
 	const checker = await User.findOne({ email: req.email }, {});
+	var dir = await fsp.readdir('./');
 	res.status(StatusCodes.OK).send();
-	initiateCheck(
-		filesInBuffer,
-		filesInPassed,
-		req.body.assignmentId,
-		req.body.fileType,
-		checker,
-		req.body.granularity
-	);
+	if (!dir.includes(`historical_${req.body.assignmentId}_${req.body.fileType}_${checker.id}`) 
+	&& !dir.includes(`batch_${req.body.assignmentId}_${req.body.fileType}_${checker.id}`)) {
+		initiateCheck(
+			filesInBuffer,
+			filesInPassed,
+			req.body.assignmentId,
+			req.body.fileType,
+			checker,
+			req.body.granularity
+		);
+	}
 };
 
 const canStudentCheck = async (req, res) => {
