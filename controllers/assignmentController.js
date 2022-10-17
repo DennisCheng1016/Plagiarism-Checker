@@ -29,6 +29,14 @@ const createAssignment = async (req, res) => {
 		throw new NotFoundError(`No subject with id ${req.params.id}`);
 	req.body.subjectId = req.params.id;
 	const assignment = await Assignment.create(req.body);
+	const failed = await Dataset.create(
+		{
+			assignmentId: assignment.id,
+			datasetName: "failedDataset",
+			fileType: "failed"
+		}
+	);
+	assignment.datasets.push(fail.id);
 	const subject = await Subject.findOneAndUpdate(
 		{ _id: req.body.subjectId },
 		{ $push: { assignments: assignment._id } },
@@ -72,6 +80,7 @@ const deleteAssignment = async (req, res) => {
 			throw new NotFoundError(`No dataset with id ${datasetId}`);
 	}
 	await fileBuffer.deleteMany({ assignmentId: assignment._id });
+	await Dataset.deleteMany({ assignmentId: assignment._id });
 	await Historical.deleteMany({ assignmentId: assignment._id });
 	await Subject.updateOne(
 		{ _id: assignment.subjectId },
