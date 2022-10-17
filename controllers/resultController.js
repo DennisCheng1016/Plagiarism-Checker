@@ -133,7 +133,7 @@ const getResultDetail = async (req, res) => {
 
 const saveResultsToHistorical = async (req, res) => {
 	for (let i = 0; i < req.body.results.length; i++) {
-		let result = await Result.findOne({ id: req.body.results[i] }, {});
+		let result = await Result.findOne({ _id: req.body.results[i] }, {});
 		const historical = await Historical.create({
 			fileName: result.fileName,
 			assignmentId: result.assignmentId,
