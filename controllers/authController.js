@@ -98,7 +98,7 @@ async function sendAuthenticationEmail(req, res) {
     const subject = "Authentication Email";
     const message = `
     <h3>Hello ${user.username}, </h3>
-    <p>This is your token: <a href="https://sc-plagiarism-checker.herokuapp.com/user/recoverEmail/user/resetPassword?token=${Authorization}"> click here</a></p>`;
+    <p>This is your token: <a href="https://sc-plagiarism-checker.herokuapp.com/resetPassword?token=${Authorization}"> click here</a></p>`;
 
 
     await sendEmail(subject, message, sendTo, sendFrom, replyTo);
