@@ -41,9 +41,9 @@ SYSTEM =	UNIX
 SUBSYSTEM =	SOLARIS
 
 # Locations
-DIR =		/home/dick
-BINDIR =	$(DIR)/bin.`$(DIR)/bin/arch`
-MAN1DIR =	$(DIR)/man/man1
+DIR =		/home/dennis/Downloads/sim_3_0_2
+BINDIR =	/usr/bin
+MAN1DIR =	/usr/share/man/man1
 
 # Commands
 COPY =		cp -p
@@ -61,15 +61,15 @@ NULLFILE =	/dev/null
 # SYSTEM =	MSDOS
 # SUBSYSTEM =	MinGW
 
-# # Locations
+# Locations
 # DIR =		C:/BIN
 # BINDIR =	C:/BIN
 # MAN1DIR =	C:/BIN
 
-# # File names
+# File names
 # NULLFILE =	nul
 
-# # Commands (cp required, since xcopy cannot handle forward slashes)
+# Commands (cp required, since xcopy cannot handle forward slashes)
 # COPY =		cp -p
 # EXE =		.exe
 # LEX =		flex
@@ -432,7 +432,6 @@ clean:
 
 fresh:		clean
 		-rm -f *.exe
-		-rm -f $(BINARIES)
 
 #	D E P E N D E N C I E S
 

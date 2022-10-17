@@ -673,13 +673,31 @@ paths:
                     assignmentId: 63459bfb91cf355a962cea18
                     fileType: c
                     granularity: 10
-                    datasets: ['6345cda0beb454ed03853cc9']
             example:
               assignmentId: 63459bfb91cf355a962cea18
               fileType: c
               granularity: 10
-              datasets: ['6345cda0beb454ed03853cc9']
         required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /check/{id}:
+    get:
+      tags:
+        - Checker
+      summary: Check if the logged in student can still check/submit
+      operationId: canStudentCheck
+      parameters: 
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The assignment ID
       responses:
         '200':
           description: ''
@@ -973,7 +991,6 @@ components:
         - assignmentId
         - fileType
         - granularity
-        - datasets
       type: object
       properties:
         assignmentId:
@@ -982,15 +999,10 @@ components:
           type: string
         granularity:
           type: string
-        datasets:
-          type: array
-          items:
-            type: string
       example:
         assignmentId: 63459bfb91cf355a962cea18
         fileType: c
         granularity: 10
-        datasets: ['6345cda0beb454ed03853cc9']
     updateUserAccount:
       title: Update User Account
       required:

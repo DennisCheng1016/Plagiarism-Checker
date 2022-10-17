@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const { UnauthenticatedError, NotFoundError } = require('../errors');
+const { UnauthenticatedError, NotFoundError, BadRequestError } = require('../errors');
 const Assignment = require('../models/assignment');
 const Dataset = require('../models/dataset');
 const fileBuffer = require('../models/bufferFile');
@@ -52,6 +52,9 @@ const deleteDataset = async (req, res) => {
 	if (req.user.role !== 'teacher' && req.user.role !== 'admin')
 		throw new UnauthenticatedError('Only teacher/admin can create dataset');
 	const dataset = await Dataset.findOneAndDelete({ _id: req.params.id });
+	if (dataset.fileType === 'failed') {
+		throw new BadRequestError('You cannot delete this dataset');
+	}
 	if (!dataset)
 		throw new NotFoundError(`No dataset with id ${req.params.id}`);
 	await Historical.deleteMany({ datasetId: dataset._id });
