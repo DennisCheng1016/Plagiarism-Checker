@@ -162,12 +162,10 @@ const addStudent = async (req, res) => {
 	);
 	subject.students.push(student);
 	for (let i = 0; i < subject.assignments.length; i++) {
-		await StudAssRecord.create(
-			{
-				assignmentId: subject.assignments[i],
-				studentId: student.id
-			}
-		);
+		await StudAssRecord.create({
+			assignmentId: subject.assignments[i],
+			studentId: student.id,
+		});
 	}
 	await subject.save();
 	return res.status(StatusCodes.OK).json();
@@ -181,8 +179,3 @@ module.exports = {
 	getSubjectList,
 	getSubjectListAdmin,
 };
-
-function paginate(array, page_size, page_number) {
-	// human-readable page numbers usually start with 1, so we reduce 1 in the first argument
-	return array.slice((page_number - 1) * page_size, page_number * page_size);
-}

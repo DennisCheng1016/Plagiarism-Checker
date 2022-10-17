@@ -14,6 +14,8 @@ describe('checkSubject', () => {
 		await connectDB();
 		await Permission.findOneAndDelete({ email: 'testTeacher@gmail.com' });
 		await User.findOneAndDelete({ email: 'testAdmin@gmail.com' });
+		await User.findOneAndDelete({ email: 'testTeacher@gmail.com' });
+		await User.findOneAndDelete({ email: 'testStudent@gmail.com' });
 		await Subject.findOneAndDelete({ subjectCode: 'jestUpdateTest' });
 
 		// Hash the password
@@ -32,11 +34,18 @@ describe('checkSubject', () => {
 			password: HashedPassword,
 			role: 'teacher',
 		});
+		student = await User.create({
+			username: 'testStudent',
+			email: 'testStudent@gmail.com',
+			password: HashedPassword,
+			role: 'student',
+		});
 	});
 	afterAll(async () => {
 		await Permission.findOneAndDelete({ email: 'testTeacher@gmail.com' });
 		await User.findOneAndDelete({ email: 'testTeacher@gmail.com' });
 		await User.findOneAndDelete({ email: 'testAdmin@gmail.com' });
+		await User.findOneAndDelete({ email: 'testStudent@gmail.com' });
 		await mongoose.disconnect();
 	});
 	test('Create subject (Success)', async () => {
@@ -58,9 +67,14 @@ describe('checkSubject', () => {
 		await subjectController.getSubjectList(req, res);
 		expect(res.statusCode).toBe(StatusCodes.OK);
 	});
+	test('Get subject list Admin (Success)', async () => {
+		const req = { user: admin };
+		const res = httpMocks.createResponse();
+		await subjectController.getSubjectListAdmin(req, res);
+		expect(res.statusCode).toBe(StatusCodes.OK);
+	});
 	test('Update subject (Success)', async () => {
 		testSubject = await Subject.findOne({ subjectCode: 'jestTest' });
-
 		const req = {
 			params: { id: testSubject._id },
 			body: {
@@ -71,6 +85,15 @@ describe('checkSubject', () => {
 		req.user = await User.findOne({ email: 'testAdmin@gmail.com' });
 		const res = httpMocks.createResponse();
 		await subjectController.updateSubject(req, res);
+		expect(res.statusCode).toBe(StatusCodes.OK);
+	});
+	test('Add student to the subject (Success)', async () => {
+		const req = {
+			user: student,
+			body: { subjectCode: 'jestUpdateTest' },
+		};
+		const res = httpMocks.createResponse();
+		await subjectController.addStudent(req, res);
 		expect(res.statusCode).toBe(StatusCodes.OK);
 	});
 	test('Delete subject (Success)', async () => {

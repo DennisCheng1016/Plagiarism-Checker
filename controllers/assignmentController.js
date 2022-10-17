@@ -29,13 +29,11 @@ const createAssignment = async (req, res) => {
 		throw new NotFoundError(`No subject with id ${req.params.id}`);
 	req.body.subjectId = req.params.id;
 	const assignment = await Assignment.create(req.body);
-	const failed = await Dataset.create(
-		{
-			assignmentId: assignment.id,
-			datasetName: "failedDataset",
-			fileType: "failed"
-		}
-	);
+	const failed = await Dataset.create({
+		assignmentId: assignment.id,
+		datasetName: 'failedDataset',
+		fileType: 'failed',
+	});
 	assignment.datasets.push(failed.id);
 	assignment.save();
 	const subject = await Subject.findOneAndUpdate(
