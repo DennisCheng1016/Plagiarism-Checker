@@ -31,7 +31,6 @@ const getResultDetail = async (req, res) => {
 	const result = await Result.findOne({ _id: req.params.id }, {}).lean();
 	const dup = result.duplicates;
 	var text = result.textContent;
-	
 	let highlightTable = [];
 	for (let i = 0; i < text.length; i++) {
 		highlightTable.push(0);
@@ -76,7 +75,17 @@ const getResultDetail = async (req, res) => {
 		location = endList[i][0];
 		similarTo.push(endList[i][1]);
 	}
-	if (text.slice(endList[endList.length-1][0], endList.length) !== '') {
+	if (startList.length == 0) {
+		let segment = text;
+		segment = segment.split('&').join('&amp');
+		segment = segment.split('"').join('&quot')
+		segment = segment.split('\'').join('&#39;')
+		segment = segment.split('<').join('&lt');
+		segment = segment.split('>').join('&gt');
+		segment = segment.split('\n').join('<br>')
+		segment = "<p>" + segment + "</p>"
+		resultList.push(segment);
+	} else if (text.slice(endList[endList.length-1][0], endList.length) !== '') {
 		let segment = text.slice(endList[endList.length-1], endList.length);
 		segment = segment.split('&').join('&amp');
 		segment = segment.split('"').join('&quot')
