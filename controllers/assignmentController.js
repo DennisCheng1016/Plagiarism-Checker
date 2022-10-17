@@ -36,7 +36,8 @@ const createAssignment = async (req, res) => {
 			fileType: "failed"
 		}
 	);
-	assignment.datasets.push(fail.id);
+	assignment.datasets.push(failed.id);
+	assignment.save();
 	const subject = await Subject.findOneAndUpdate(
 		{ _id: req.body.subjectId },
 		{ $push: { assignments: assignment._id } },
