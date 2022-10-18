@@ -46,7 +46,7 @@ describe('checkAssignment', () => {
 			subjectName: 'testSubjectName',
 			teachers: [teacher._id],
 		});
-	});
+	}, 20000);
 	afterAll(async () => {
 		await Permission.findOneAndDelete({ email: 'testTeacher2@gmail.com' });
 		await User.findOneAndDelete({ email: 'testTeacher2@gmail.com' });
