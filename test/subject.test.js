@@ -40,7 +40,7 @@ describe('checkSubject', () => {
 			password: HashedPassword,
 			role: 'student',
 		});
-	});
+	}, 20000);
 	afterAll(async () => {
 		await Permission.findOneAndDelete({ email: 'testTeacher@gmail.com' });
 		await User.findOneAndDelete({ email: 'testTeacher@gmail.com' });
