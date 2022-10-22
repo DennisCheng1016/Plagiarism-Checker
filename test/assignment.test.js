@@ -14,10 +14,10 @@ const Assignment = require('../models/assignment');
 describe('checkAssignment', () => {
 	beforeAll(async () => {
 		await connectDB();
-		await Permission.findOneAndDelete({ email: 'testTeacher@gmail.com' });
-		await User.findOneAndDelete({ email: 'testAdmin@gmail.com' });
-		await User.findOneAndDelete({ email: 'testTeacher@gmail.com' });
-		await User.findOneAndDelete({ email: 'testStudent@gmail.com' });
+		await Permission.findOneAndDelete({ email: 'testTeacher2@gmail.com' });
+		await User.findOneAndDelete({ email: 'testAdmin2@gmail.com' });
+		await User.findOneAndDelete({ email: 'testTeacher2@gmail.com' });
+		await User.findOneAndDelete({ email: 'testStudent2@gmail.com' });
 		await Subject.findOneAndDelete({ subjectCode: 'testSubjectCode' });
 		// Hash the password
 		const HashedPassword = bcrypt.hashSync('psw12345', 10);

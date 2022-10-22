@@ -31,6 +31,7 @@ const datasetRouter = require('./routes/datasetRouter');
 const bufferFileRouter = require('./routes/bufferFileRouter');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
+const datasetFileRouter = require('./routes/datasetFileRouter');
 
 // Middlewares
 const verifyAdmin = require('./middlewares/verifyAdmin').verifyAdmin;
@@ -71,6 +72,7 @@ app.use('/subject', subjectRouter);
 app.use('/assignment', assignmentRouter);
 app.use('/dataset', datasetRouter);
 app.use('/buffer', bufferFileRouter);
+app.use('/datasetFile', datasetFileRouter);
 // app.use(verifyAdmin);
 app.use('/admin', verifyAdmin, adminRouter);
 

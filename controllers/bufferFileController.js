@@ -61,7 +61,7 @@ const uploadFiles = async (req, res) => {
 			});
 		}
 	}
-	return res.status(StatusCodes.OK).send();
+	return res.status(StatusCodes.CREATED).send();
 };
 
 const getBufferFiles = async (req, res) => {
