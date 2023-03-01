@@ -135,7 +135,10 @@ const deleteSubject = async (req, res) => {
 			await Historical.deleteMany({ datasetId: dataset._id });
 		}
 		await fileBuffer.deleteMany({ assignmentId: assignment._id });
+<<<<<<< HEAD
 		await StudAssRecord.deleteMany({ assignmentId: assignment._id});
+=======
+>>>>>>> heroku/main
 	}
 	const users = await User.updateMany(
 		{ subjects: subject._id },

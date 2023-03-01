@@ -13,6 +13,7 @@ const { sep } = require('path');
 const { StatusCodes } = require('http-status-codes');
 
 const postCheckConfig = async (req, res) => {
+<<<<<<< HEAD
 	const checker = await User.findOne({ email: req.email }, {});
 	if (checker.role === 'student') {
 		filesInBuffer = await Buffer.find({
@@ -26,6 +27,12 @@ const postCheckConfig = async (req, res) => {
 			fileType: req.body.fileType,
 		});
 	}	
+=======
+	const filesInBuffer = await Buffer.find({
+		assignmentId: req.body.assignmentId,
+		fileType: req.body.fileType,
+	});
+>>>>>>> heroku/main
 	const assignment = await Assignment.findOne(
 		{ _id: req.body.assignmentId },
 		{}
@@ -37,6 +44,10 @@ const postCheckConfig = async (req, res) => {
 		},
 		{}
 	); 
+<<<<<<< HEAD
+=======
+	const checker = await User.findOne({ email: req.email }, {});
+>>>>>>> heroku/main
 	var dir = await fsp.readdir('./');
 	res.status(StatusCodes.OK).send();
 	if (!dir.includes(`historical_${req.body.assignmentId}_${req.body.fileType}_${checker.id}`) 
