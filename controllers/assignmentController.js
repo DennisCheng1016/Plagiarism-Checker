@@ -2,10 +2,7 @@ const Assignment = require('../models/assignment');
 const Subject = require('../models/subject');
 const Dataset = require('../models/dataset');
 const fileBuffer = require('../models/bufferFile');
-<<<<<<< HEAD
 const StudAssRecord = require('../models/studAssRecord');
-=======
->>>>>>> heroku/main
 const { UnauthenticatedError, NotFoundError } = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 const Historical = require('../models/historical');
@@ -85,10 +82,7 @@ const deleteAssignment = async (req, res) => {
 	await fileBuffer.deleteMany({ assignmentId: assignment._id });
 	await Dataset.deleteMany({ assignmentId: assignment._id });
 	await Historical.deleteMany({ assignmentId: assignment._id });
-<<<<<<< HEAD
 	await StudAssRecord.deleteMany({ assignmentId: assignment._id});
-=======
->>>>>>> heroku/main
 	await Subject.updateOne(
 		{ _id: assignment.subjectId },
 		{ $pull: { assignments: assignment._id } }

@@ -1,24 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
-<<<<<<< HEAD
 const {
 	UnauthenticatedError,
 	NotFoundError,
 	BadRequestError,
 } = require('../errors');
-=======
-const { UnauthenticatedError, NotFoundError, BadRequestError } = require('../errors');
->>>>>>> heroku/main
 const Assignment = require('../models/assignment');
 const Dataset = require('../models/dataset');
 const fileBuffer = require('../models/bufferFile');
 const Historical = require('../models/historical');
 
 const getDatasetList = async (req, res) => {
-<<<<<<< HEAD
 	if (req.user.role !== 'teacher' && req.user.role !== 'admin')
 		throw new UnauthenticatedError('Only teacher/admin can create dataset');
-=======
->>>>>>> heroku/main
 	const assignment = await Assignment.findOne({
 		_id: req.params.id,
 	}).populate({

@@ -15,7 +15,6 @@ const uploadFiles = async (req, res) => {
 	if (!(await Assignment.findById({ _id: assignmentId }))) {
 		throw new NotFoundError(`No assignment with id ${assignmentId}}`);
 	}
-<<<<<<< HEAD
 	const assignment = await Assignment.findOne(
 		{ _id: assignmentId },
 		{}
@@ -25,9 +24,6 @@ const uploadFiles = async (req, res) => {
 			throw new BadRequestError('Due date has passed.');
 		}
 
-=======
-	if (req.user.role === 'student') {
->>>>>>> heroku/main
 		await fileBuffer.deleteOne({
 			assignmentId: assignmentId,
 			user: req.user._id,
@@ -73,11 +69,7 @@ const uploadFiles = async (req, res) => {
 			});
 		}
 	}
-<<<<<<< HEAD
 	return res.status(StatusCodes.CREATED).send();
-=======
-	return res.status(StatusCodes.OK).send();
->>>>>>> heroku/main
 };
 
 const getBufferFiles = async (req, res) => {
