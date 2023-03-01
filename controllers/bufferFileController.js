@@ -15,7 +15,15 @@ const uploadFiles = async (req, res) => {
 	if (!(await Assignment.findById({ _id: assignmentId }))) {
 		throw new NotFoundError(`No assignment with id ${assignmentId}}`);
 	}
+	const assignment = await Assignment.findOne(
+		{ _id: assignmentId },
+		{}
+	);
 	if (req.user.role === 'student') {
+		if (assignment.dueDate.getTime() <= Date.now()) {
+			throw new BadRequestError('Due date has passed.');
+		}
+
 		await fileBuffer.deleteOne({
 			assignmentId: assignmentId,
 			user: req.user._id,
