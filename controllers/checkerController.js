@@ -15,6 +15,7 @@ const { StatusCodes } = require('http-status-codes');
 const postCheckConfig = async (req, res) => {
 	const checker = await User.findOne({ email: req.email }, {});
 	if (checker.role === 'student') {
+		// Only check his/her own work
 		filesInBuffer = await Buffer.find({
 			assignmentId: req.body.assignmentId,
 			fileType: req.body.fileType,
